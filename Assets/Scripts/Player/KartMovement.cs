@@ -7,7 +7,7 @@ using UnityEngine.Windows;
 [RequireComponent(typeof(Rigidbody))]
 public partial class KartMovement : StateManager
 {
-    [SerializeField] private float decelerateSpd, accelerateSpd, looseSpd, maxSpdFront,maxSpdBack, maniability, lostSpdContact;
+    [SerializeField] private float decelerateSpd, accelerateSpd, looseSpd, maxSpdFront,maxSpdBack, maniability, lostSpdContact, limitVeloY;
 
     private Rigidbody rb;
     private float velocity, direction;
@@ -53,7 +53,8 @@ public partial class KartMovement : StateManager
 
     private void SetVelocity()
     {
-        rb.velocity = new Vector3(0f, rb.velocity.y,0f )+ transform.forward * velocity;
+       //Pour empecher qu'il s'envole
+        rb.velocity = new Vector3(0f,rb.velocity.y > limitVeloY ? rb.velocity.y /2f : rb.velocity.y, 0f )+ transform.forward * velocity;
     }
 
     private void LooseSpd()
@@ -126,12 +127,7 @@ public partial class KartMovement : StateManager
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.gameObject.layer != LayerMask.NameToLayer("Slide"))
-            velocity = velocity - lostSpdContact < 0f ? 0f : velocity - lostSpdContact;
-    }
-    private void OnCollisionStay(Collision collision)
-    {
-        if(collision.collider.gameObject.layer != LayerMask.NameToLayer("Slide"))
+        if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Slide"))
             velocity = velocity - lostSpdContact < 0f ? 0f : velocity - lostSpdContact;
     }
 }
