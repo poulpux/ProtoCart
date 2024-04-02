@@ -8,11 +8,12 @@ public partial class KartMovement
 
     private void onAccelerateEnter()
     {
-       
+
     }
     private void onAccelerateUpdate()
     {
-
+        GainSpeed();
+        StateChangerAccelerate();
     }
     private void onAccelerateFixedUpdate()
     {
@@ -21,8 +22,19 @@ public partial class KartMovement
 
     private void onAccelerateExit()
     {
-
+        
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    private void GainSpeed()
+    {
+        velocity = velocity + accelerateSpd * Time.deltaTime < maxSpdFront ? velocity + accelerateSpd * Time.deltaTime : maxSpdFront;
+    }
+    private void StateChangerAccelerate()
+    {
+        if (!isAccelerate || isDecelerate)
+            ChangeState(doNothing);
+    }
+
 }

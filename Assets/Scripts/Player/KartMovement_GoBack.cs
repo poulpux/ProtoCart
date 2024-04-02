@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public partial class KartMovement
@@ -12,7 +13,8 @@ public partial class KartMovement
     }
     private void onGoBackUpdate()
     {
-
+        Decelerate();
+        StateChangerGoBack();
     }
     private void onGoBackFixedUpdate()
     {
@@ -21,8 +23,19 @@ public partial class KartMovement
 
     private void onGoBackExit()
     {
-
+        
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    private void Decelerate()
+    {
+        velocity = velocity - decelerateSpd * Time.deltaTime > maxSpdBack ? velocity - decelerateSpd * Time.deltaTime : maxSpdBack;
+    }
+
+    private void StateChangerGoBack()
+    {
+        if (!isDecelerate)
+            ChangeState(doNothing);
+    }
 }

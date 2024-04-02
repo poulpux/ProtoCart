@@ -12,7 +12,8 @@ public partial class KartMovement
     }
     private void onDoNothingUpdate()
     {
-
+        LooseSpd();
+        StateChangerDoNothing();
     }
     private void onDoNothingFixedUpdate()
     {
@@ -21,8 +22,16 @@ public partial class KartMovement
 
     private void onDoNothingExit()
     {
-
+        
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    private void StateChangerDoNothing()
+    {
+        if (isDecelerate)
+            ChangeState(goBack);
+        else if (isAccelerate)
+            ChangeState(accelerate);
+    }
 }
