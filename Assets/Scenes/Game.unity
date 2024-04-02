@@ -579,6 +579,9 @@ Transform:
   - {fileID: 703665124}
   - {fileID: 400049220}
   - {fileID: 304089321}
+  - {fileID: 1996021780}
+  - {fileID: 213783490}
+  - {fileID: 676157536}
   m_Father: {fileID: 315308170}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &203296321
@@ -730,7 +733,7 @@ GameObject:
   m_Component:
   - component: {fileID: 213783490}
   m_Layer: 6
-  m_Name: rampe (2)
+  m_Name: BigRampe
   m_TagString: Untagged
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -752,7 +755,7 @@ Transform:
   - {fileID: 958895332}
   - {fileID: 868923694}
   - {fileID: 94827581}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 157115065}
   m_LocalEulerAnglesHint: {x: 0, y: 89.42, z: 0}
 --- !u!1 &253006196
 GameObject:
@@ -2022,7 +2025,7 @@ GameObject:
   m_Component:
   - component: {fileID: 676157536}
   m_Layer: 6
-  m_Name: rampe (1)
+  m_Name: BigRampe
   m_TagString: Untagged
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -2044,7 +2047,7 @@ Transform:
   - {fileID: 875940203}
   - {fileID: 653103108}
   - {fileID: 2008883601}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 157115065}
   m_LocalEulerAnglesHint: {x: 0, y: 89.42, z: 0}
 --- !u!1 &703665123
 GameObject:
@@ -4021,7 +4024,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1996021780}
   m_Layer: 6
-  m_Name: rampe
+  m_Name: BigRampe
   m_TagString: Untagged
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -4043,7 +4046,7 @@ Transform:
   - {fileID: 940893650}
   - {fileID: 586159741}
   - {fileID: 1750597374}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 157115065}
   m_LocalEulerAnglesHint: {x: 0, y: 89.42, z: 0}
 --- !u!1 &2008883600
 GameObject:
@@ -4368,6 +4371,3 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 315308170}
   - {fileID: 333074992}
-  - {fileID: 1996021780}
-  - {fileID: 213783490}
-  - {fileID: 676157536}

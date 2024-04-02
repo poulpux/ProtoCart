@@ -53,6 +53,24 @@ public partial class @Control: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Drift"",
+                    ""type"": ""Button"",
+                    ""id"": ""4489d9e6-9153-4395-9845-a1f6d714c9e1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ThrowObject"",
+                    ""type"": ""Button"",
+                    ""id"": ""86e80d2b-b372-4f9d-bcf7-8adf86f523be"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -110,6 +128,28 @@ public partial class @Control: IInputActionCollection2, IDisposable
                     ""action"": ""Direction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""830a6b04-5edb-4619-b9d7-6c7c23ec1d45"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Drift"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9d9669ac-d293-4a56-858a-8ecc38511dbf"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ThrowObject"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -121,6 +161,8 @@ public partial class @Control: IInputActionCollection2, IDisposable
         m_InputSystem_Accelerate = m_InputSystem.FindAction("Accelerate", throwIfNotFound: true);
         m_InputSystem_Decelerate = m_InputSystem.FindAction("Decelerate", throwIfNotFound: true);
         m_InputSystem_Direction = m_InputSystem.FindAction("Direction", throwIfNotFound: true);
+        m_InputSystem_Drift = m_InputSystem.FindAction("Drift", throwIfNotFound: true);
+        m_InputSystem_ThrowObject = m_InputSystem.FindAction("ThrowObject", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -185,6 +227,8 @@ public partial class @Control: IInputActionCollection2, IDisposable
     private readonly InputAction m_InputSystem_Accelerate;
     private readonly InputAction m_InputSystem_Decelerate;
     private readonly InputAction m_InputSystem_Direction;
+    private readonly InputAction m_InputSystem_Drift;
+    private readonly InputAction m_InputSystem_ThrowObject;
     public struct InputSystemActions
     {
         private @Control m_Wrapper;
@@ -192,6 +236,8 @@ public partial class @Control: IInputActionCollection2, IDisposable
         public InputAction @Accelerate => m_Wrapper.m_InputSystem_Accelerate;
         public InputAction @Decelerate => m_Wrapper.m_InputSystem_Decelerate;
         public InputAction @Direction => m_Wrapper.m_InputSystem_Direction;
+        public InputAction @Drift => m_Wrapper.m_InputSystem_Drift;
+        public InputAction @ThrowObject => m_Wrapper.m_InputSystem_ThrowObject;
         public InputActionMap Get() { return m_Wrapper.m_InputSystem; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -210,6 +256,12 @@ public partial class @Control: IInputActionCollection2, IDisposable
             @Direction.started += instance.OnDirection;
             @Direction.performed += instance.OnDirection;
             @Direction.canceled += instance.OnDirection;
+            @Drift.started += instance.OnDrift;
+            @Drift.performed += instance.OnDrift;
+            @Drift.canceled += instance.OnDrift;
+            @ThrowObject.started += instance.OnThrowObject;
+            @ThrowObject.performed += instance.OnThrowObject;
+            @ThrowObject.canceled += instance.OnThrowObject;
         }
 
         private void UnregisterCallbacks(IInputSystemActions instance)
@@ -223,6 +275,12 @@ public partial class @Control: IInputActionCollection2, IDisposable
             @Direction.started -= instance.OnDirection;
             @Direction.performed -= instance.OnDirection;
             @Direction.canceled -= instance.OnDirection;
+            @Drift.started -= instance.OnDrift;
+            @Drift.performed -= instance.OnDrift;
+            @Drift.canceled -= instance.OnDrift;
+            @ThrowObject.started -= instance.OnThrowObject;
+            @ThrowObject.performed -= instance.OnThrowObject;
+            @ThrowObject.canceled -= instance.OnThrowObject;
         }
 
         public void RemoveCallbacks(IInputSystemActions instance)
@@ -245,5 +303,7 @@ public partial class @Control: IInputActionCollection2, IDisposable
         void OnAccelerate(InputAction.CallbackContext context);
         void OnDecelerate(InputAction.CallbackContext context);
         void OnDirection(InputAction.CallbackContext context);
+        void OnDrift(InputAction.CallbackContext context);
+        void OnThrowObject(InputAction.CallbackContext context);
     }
 }
