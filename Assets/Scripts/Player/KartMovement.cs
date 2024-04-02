@@ -124,15 +124,4 @@ public partial class KartMovement : StateManager
     {
         direction = 0f;
     }
-
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if(collision.collider.gameObject.layer != LayerMask.NameToLayer("Slide"))
-    //        velocity = velocity - lostSpdContact < 0f ? 0f : velocity - lostSpdContact;
-    //}
-    //private void OnCollisionStay(Collision collision)
-    //{
-    //    if(collision.collider.gameObject.layer != LayerMask.NameToLayer("Slide"))
-    //        velocity = velocity - lostSpdContact < 0f ? 0f : velocity - lostSpdContact;
-    //}
 }
