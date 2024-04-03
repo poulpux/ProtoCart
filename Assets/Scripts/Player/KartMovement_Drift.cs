@@ -21,6 +21,7 @@ public partial class KartMovement
     private void onDriftUpdate()
     {
         StateChangerDrift();
+        DriftSpd();
     }
     private void onDriftFixedUpdate()
     {
@@ -34,9 +35,17 @@ public partial class KartMovement
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    private void DriftSpd()
+    {
+        if (isAccelerate)
+            GainSpeed();
+        else
+            LooseSpd();
+    }
+
     private void StateChangerDrift()
     {
-        if (velocity < neccessarySpd || !isDrifting)
+        if (velocity < neccessarySpd || !isDrifting || velocity < neccessarySpd)
             ChangeState(doNothing);
     }
 }

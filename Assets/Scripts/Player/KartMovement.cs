@@ -65,14 +65,6 @@ public partial class KartMovement : StateManager
         rb.velocity = new Vector3(0f,rb.velocity.y > limitVeloY ? rb.velocity.y /2f : rb.velocity.y, 0f )+ transform.forward * velocity;
     }
 
-    private void LooseSpd()
-    {
-        if(velocity > 0)
-            velocity = velocity - looseSpd * Time.deltaTime < 0 ? 0 : velocity - looseSpd * Time.deltaTime;
-        else
-            velocity = velocity + looseSpd * Time.deltaTime > 0 ? 0 : velocity + looseSpd * Time.deltaTime;
-    }
-
     private void Rotate()
     {
         if(velocity >= 0f)
@@ -88,7 +80,7 @@ public partial class KartMovement : StateManager
 
     private void TryDrift()
     {
-        if (timerDrift > 0.2f && GetState() != drift)
+        if (timerDrift > 0.2f && GetState() != drift && isDrifting)
             Drift();
     }
 
