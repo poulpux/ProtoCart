@@ -9,7 +9,7 @@ public partial class KartMovement
 
     private void onGoBackEnter()
     {
-       
+        rendererr.material.color = Color.red;
     }
     private void onGoBackUpdate()
     {

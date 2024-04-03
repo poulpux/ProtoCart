@@ -8,7 +8,7 @@ public partial class KartMovement
 
     private void onAccelerateEnter()
     {
-
+        rendererr.material.color = Color.cyan;
     }
     private void onAccelerateUpdate()
     {

@@ -12,11 +12,14 @@ public partial class KartMovement : StateManager
     [SerializeField] private float decelerateSpd;
     [SerializeField] private float accelerateSpd, looseSpd, maxSpdFront, onContactMaxSpd,onPanadeMaxSpd, maxSpdBack, maniability, limitVeloY;
 
-    private Rigidbody rb;
-    private float velocity, direction;
+    [Header("=====Visu=====")]
+    [Space(10)]
+    [SerializeField] private MeshRenderer rendererr;
 
     Control input;
-    private bool isAccelerate, isDecelerate;
+    private Rigidbody rb;
+    private float velocity, direction, timerDrift;
+    private bool isAccelerate, isDecelerate, isDrifting;
     protected override void Awake()
     {
         base.Awake();
@@ -31,8 +34,10 @@ public partial class KartMovement : StateManager
     protected override void Update()
     {
         base.Update();
+        AllTimer();
         SetVelocity();
         Rotate();
+        TryDrift();
     }
 
     protected override void FixedUpdate()
@@ -60,14 +65,6 @@ public partial class KartMovement : StateManager
         rb.velocity = new Vector3(0f,rb.velocity.y > limitVeloY ? rb.velocity.y /2f : rb.velocity.y, 0f )+ transform.forward * velocity;
     }
 
-    private void LooseSpd()
-    {
-        if(velocity > 0)
-            velocity = velocity - looseSpd * Time.deltaTime < 0 ? 0 : velocity - looseSpd * Time.deltaTime;
-        else
-            velocity = velocity + looseSpd * Time.deltaTime > 0 ? 0 : velocity + looseSpd * Time.deltaTime;
-    }
-
     private void Rotate()
     {
         if(velocity >= 0f)
@@ -76,6 +73,21 @@ public partial class KartMovement : StateManager
             transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction, 0f);
     }
 
+    private void AllTimer()
+    {
+        timerDrift += Time.deltaTime;
+    }
+
+    private void TryDrift()
+    {
+        if (timerDrift > 0.2f && GetState() != drift && isDrifting)
+            Drift();
+    }
+
+    private void Drift()
+    {
+        ChangeState(drift);
+    }
 
     private void OnEnable()
     {
@@ -86,6 +98,8 @@ public partial class KartMovement : StateManager
         input.InputSystem.Decelerate.canceled += DecelerateSleep;
         input.InputSystem.Direction.performed += GetDirectionActing;
         input.InputSystem.Direction.canceled += GetDirectionSleep;
+        input.InputSystem.Drift.performed += TryDrift;
+        input.InputSystem.Drift.canceled += DriftSleep;
     }
 
     private void OnDisable()
@@ -97,7 +111,19 @@ public partial class KartMovement : StateManager
         input.InputSystem.Decelerate.canceled -= DecelerateSleep;
         input.InputSystem.Direction.performed -= GetDirectionActing;
         input.InputSystem.Direction.canceled -= GetDirectionSleep;
+        input.InputSystem.Drift.performed -= TryDrift;
+        input.InputSystem.Drift.canceled -= DriftSleep;
     }
+    private void TryDrift(InputAction.CallbackContext value)
+    {
+        isDrifting = value.ReadValue<float>() > 0;
+    }
+
+    private void DriftSleep(InputAction.CallbackContext value)
+    {
+        isDrifting = false;
+    }
+
 
     private void AccelerateActing(InputAction.CallbackContext value)
     {
