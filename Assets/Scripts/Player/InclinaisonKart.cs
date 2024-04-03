@@ -27,7 +27,7 @@ public class InclinaisonKart : MonoBehaviour
             else
                 dist3 = 1f;
 
-        print(hit2.distance);
+        dist3 = -dist3;
         float eulerX =/* (dist2 + dist1 + dist3)*/ dist1 + dist3 ;
 
         //if (dist1 > dist2 && dist2 > dist3)
@@ -38,6 +38,7 @@ public class InclinaisonKart : MonoBehaviour
 
         if (dist2 == 1f)
             eulerX = 0f;
+        print(eulerX);
         //if(eulerX < 0f) 
         //    print(eulerX);
         Quaternion angle = Quaternion.Euler(new Vector3(eulerX * 20f , transform.eulerAngles.y, transform.eulerAngles.z));
