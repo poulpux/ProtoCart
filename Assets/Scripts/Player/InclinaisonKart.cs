@@ -28,7 +28,7 @@ public class InclinaisonKart : MonoBehaviour
                 dist3 = 1f;
 
         print(hit2.distance);
-        float eulerX =/* (dist2 + dist1 + dist3)*/ dist1 + dist3 /2f ;
+        float eulerX =/* (dist2 + dist1 + dist3)*/ dist1 + dist3 ;
 
         //if (dist1 > dist2 && dist2 > dist3)
         //    eulerX = 25;
