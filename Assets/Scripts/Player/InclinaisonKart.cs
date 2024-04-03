@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InclinaisonKart : MonoBehaviour
 {
-    public float rotationSpeed = 5f; // Vitesse de rotation
+    public float rotationSpeed = 5f, multiplyAngle = 20f; 
     [SerializeField] private GameObject P1, P2, P3;
 
     void Update()
@@ -14,7 +14,7 @@ public class InclinaisonKart : MonoBehaviour
 
     private Quaternion CalculateAngle()
     {
-        float dist1 = 0f, dist2 = 0f, dist3 = 0f;
+        float dist1 , dist2 , dist3 ;
 
         dist1 = RaycastDist(1);
         dist2 = RaycastDist(2);
@@ -24,7 +24,7 @@ public class InclinaisonKart : MonoBehaviour
         if (dist2 == 1f)
             eulerX = 0f;
 
-        return Quaternion.Euler(new Vector3(eulerX * 20f, transform.eulerAngles.y, transform.eulerAngles.z));
+        return Quaternion.Euler(new Vector3(eulerX * multiplyAngle, transform.eulerAngles.y, transform.eulerAngles.z));
     }
 
     private float RaycastDist(int nb)
