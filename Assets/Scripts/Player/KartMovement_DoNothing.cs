@@ -8,7 +8,7 @@ public partial class KartMovement
 
     private void onDoNothingEnter()
     {
-       
+       rendererr.material.color = Color.white;
     }
     private void onDoNothingUpdate()
     {

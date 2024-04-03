@@ -1547,6 +1547,7 @@ MonoBehaviour:
   maxSpdBack: -30
   maniability: 100
   limitVeloY: 5
+  rendererr: {fileID: 1169023324}
 --- !u!4 &333074992
 Transform:
   m_ObjectHideFlags: 0
@@ -4205,7 +4206,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2a9a67d40dbfe304cbe3b223ff5127e3, type: 2}
+  - {fileID: 2100000, guid: 629b44ca75265d6419b9a2ac8602d510, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4248,6 +4249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 5
+  multiplyAngle: 20
   P1: {fileID: 2032772613}
   P2: {fileID: 712416970}
   P3: {fileID: 1525345062}
