@@ -7,7 +7,10 @@ using UnityEngine.Windows;
 [RequireComponent(typeof(Rigidbody))]
 public partial class KartMovement : StateManager
 {
-    [SerializeField] private float decelerateSpd, accelerateSpd, looseSpd, maxSpdFront,maxSpdBack, maniability, lostSpdContact, limitVeloY;
+    [Header("=====SpeedAndControl=====")]
+    [Space(10)]
+    [SerializeField] private float decelerateSpd;
+    [SerializeField] private float accelerateSpd, looseSpd, maxSpdFront, onContactMaxSpd,onPanadeMaxSpd, maxSpdBack, maniability, limitVeloY;
 
     private Rigidbody rb;
     private float velocity, direction;
@@ -128,6 +131,14 @@ public partial class KartMovement : StateManager
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Slide"))
-            velocity = velocity - lostSpdContact < 0f ? 0f : velocity - lostSpdContact;
+            velocity = 0f;
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.collider.gameObject.layer == LayerMask.NameToLayer("Default") && velocity > onContactMaxSpd )
+            velocity = onContactMaxSpd;
+        if(collision.collider.gameObject.layer == LayerMask.NameToLayer("Out") && velocity > onPanadeMaxSpd )
+            velocity = Mathf.Lerp(velocity, onPanadeMaxSpd, 1f);
     }
 }
