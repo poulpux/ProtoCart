@@ -20,7 +20,7 @@ public partial class KartMovement : StateManager
     Control input;
     private Rigidbody rb;
     private float velocity, direction, timerDrift;
-    private bool isAccelerate, isDecelerate, isDrifting, onAir;
+    private bool isAccelerate, isDecelerate, isDrifting, isMuded;
     private Transform cam;
     protected override void Awake()
     {
@@ -65,10 +65,13 @@ public partial class KartMovement : StateManager
 
     private void ChangeVelocity(float veloModifier, float maxSpd)
     {
-        if(veloModifier < 0f)
-            velocity = velocity + veloModifier* Time.deltaTime > maxSpd ? velocity + veloModifier * Time.deltaTime : maxSpd;
+        if (isMuded)
+            maxSpd = onPanadeMaxSpd;
+
+        if (veloModifier < 0f)
+            velocity = velocity + veloModifier * Time.deltaTime > maxSpd ? velocity + veloModifier * Time.deltaTime : velocity + looseSpd * Time.deltaTime;
         else
-            velocity = velocity + veloModifier * Time.deltaTime < maxSpd ? velocity + veloModifier * Time.deltaTime : maxSpd;
+            velocity = velocity + veloModifier * Time.deltaTime < maxSpd ? velocity + veloModifier * Time.deltaTime : velocity - looseSpd * Time.deltaTime;
     }
 
     private void SetVelocity()
@@ -79,7 +82,7 @@ public partial class KartMovement : StateManager
 
     private void Rotate()
     {
-            transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction, 0f);
+         transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction, 0f);
     }
 
     private void AllTimer()
@@ -99,7 +102,7 @@ public partial class KartMovement : StateManager
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Slide"))
+        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Default"))
             velocity = 0f;
     }
 
@@ -109,15 +112,18 @@ public partial class KartMovement : StateManager
             velocity = onContactMaxSpd;
         if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Out") && velocity > onPanadeMaxSpd)
         {
-            velocity = Mathf.Lerp(velocity, onPanadeMaxSpd, 1f);
             rendererr.material.color = new Color(80f / 255f, 33f / 255f, 0f); //brown
+            isMuded = true;
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
         if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Out"))
+        {
             ChangeState(doNothing);
+            isMuded = false;
+        }
     }
 
     private void OnEnable()
