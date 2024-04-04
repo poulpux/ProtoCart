@@ -11,7 +11,7 @@ public class InclinaisonKart : MonoBehaviour
 
     void Update()
     {
-        transform.localRotation = Quaternion.Slerp(transform.localRotation, CalculateAngleFrontForeward(), rotationSpeed*(timerOnGround < 0.1f ? 2f : 1f) * Time.deltaTime);
+        transform.localRotation = Quaternion.Slerp(transform.localRotation, CalculateAngleFrontForeward(), rotationSpeed*(timerOnGround < 0.1f ? 2.5f : 1f) * Time.deltaTime);
     }
 
     private Quaternion CalculateAngleFrontForeward()
