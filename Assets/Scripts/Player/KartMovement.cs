@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
@@ -19,7 +20,8 @@ public partial class KartMovement : StateManager
     Control input;
     private Rigidbody rb;
     private float velocity, direction, timerDrift;
-    private bool isAccelerate, isDecelerate, isDrifting;
+    private bool isAccelerate, isDecelerate, isDrifting, onAir;
+    private Transform cam;
     protected override void Awake()
     {
         base.Awake();
@@ -57,6 +59,16 @@ public partial class KartMovement : StateManager
 
         rb = GetComponent<Rigidbody>();
         input = new Control();
+        cam = FindObjectsByType<Camera>(FindObjectsSortMode.None)
+            ?.First(o => o.gameObject.layer == LayerMask.NameToLayer("Player")).transform;
+    }
+
+    private void ChangeVelocity(float veloModifier, float maxSpd)
+    {
+        if(veloModifier < 0f)
+            velocity = velocity + veloModifier* Time.deltaTime > maxSpd ? velocity + veloModifier * Time.deltaTime : maxSpd;
+        else
+            velocity = velocity + veloModifier * Time.deltaTime < maxSpd ? velocity + veloModifier * Time.deltaTime : maxSpd;
     }
 
     private void SetVelocity()
@@ -67,9 +79,6 @@ public partial class KartMovement : StateManager
 
     private void Rotate()
     {
-        if(velocity >= 0f)
-            transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction, 0f);
-        else
             transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction, 0f);
     }
 
