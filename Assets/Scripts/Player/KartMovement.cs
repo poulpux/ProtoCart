@@ -20,6 +20,7 @@ public partial class KartMovement : StateManager
     private Rigidbody rb;
     private float velocity, direction, timerDrift;
     private bool isAccelerate, isDecelerate, isDrifting;
+    private Camera cam;
     protected override void Awake()
     {
         base.Awake();

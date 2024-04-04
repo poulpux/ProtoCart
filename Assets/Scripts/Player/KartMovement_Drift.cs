@@ -48,4 +48,9 @@ public partial class KartMovement
         if (velocity < neccessarySpd || !isDrifting || velocity < neccessarySpd)
             ChangeState(doNothing);
     }
+
+    private void ChangeRotation()
+    {
+
+    }
 }
