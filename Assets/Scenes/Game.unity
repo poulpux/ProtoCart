@@ -4278,8 +4278,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6709b676f2147294cac1b5448d953a1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 5
+  rotationSpeed: 10
   multiplyAngle: 20
+  distOnAir: 2
   P1: {fileID: 2032772613}
   P2: {fileID: 712416970}
   P3: {fileID: 1525345062}

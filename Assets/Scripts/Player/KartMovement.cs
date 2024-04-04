@@ -20,7 +20,7 @@ public partial class KartMovement : StateManager
     Control input;
     private Rigidbody rb;
     private float velocity, direction, timerDrift;
-    private bool isAccelerate, isDecelerate, isDrifting;
+    private bool isAccelerate, isDecelerate, isDrifting, onAir;
     private Transform cam;
     protected override void Awake()
     {
@@ -79,9 +79,6 @@ public partial class KartMovement : StateManager
 
     private void Rotate()
     {
-        if(velocity >= 0f)
-            transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction, 0f);
-        else
             transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction, 0f);
     }
 
