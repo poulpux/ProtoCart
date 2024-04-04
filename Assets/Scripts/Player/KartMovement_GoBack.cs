@@ -13,8 +13,9 @@ public partial class KartMovement
     }
     private void onGoBackUpdate()
     {
-        Decelerate();
         StateChangerGoBack();
+        //Decelerate();
+        ChangeVelocity(decelerateSpd, maxSpdBack);
     }
     private void onGoBackFixedUpdate()
     {

@@ -14,7 +14,7 @@ public class InclinaisonKart : MonoBehaviour
 
     private Quaternion CalculateAngleFrontForeward()
     {
-        return Quaternion.Euler(new Vector3(EulerFloat(1,3) * multiplyAngle, transform.eulerAngles.y, EulerFloat(4, 5) * multiplyAngle));
+        return Quaternion.Euler(new Vector3(EulerFloat(1,3) * multiplyAngle, transform.eulerAngles.y, EulerFloat(4, 5) * multiplyAngle * 2f));
     }
 
     private float EulerFloat(int firstP, int secondP)

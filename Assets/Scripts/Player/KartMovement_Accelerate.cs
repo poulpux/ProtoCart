@@ -12,7 +12,8 @@ public partial class KartMovement
     }
     private void onAccelerateUpdate()
     {
-        GainSpeed();
+        //GainSpeed();
+        ChangeVelocity(accelerateSpd, maxSpdFront);
         StateChangerAccelerate();
     }
     private void onAccelerateFixedUpdate()
