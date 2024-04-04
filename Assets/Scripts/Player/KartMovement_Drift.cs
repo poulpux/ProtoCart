@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public partial class KartMovement
 {
@@ -9,9 +10,12 @@ public partial class KartMovement
     [Space(10)]
     [SerializeField] private float neccessarySpd;
 
+    [HideInInspector] private UnityEvent EnterDrifEvent = new UnityEvent();
+    [HideInInspector] private UnityEvent ExitDrifEvent = new UnityEvent();
     private bool driftLeft;
     private void onDriftEnter()
     {
+        EnterDrifEvent.Invoke();
         rendererr.material.color = Color.yellow;
         if (direction == 0)
             ChangeState(doNothing);
@@ -21,7 +25,7 @@ public partial class KartMovement
     private void onDriftUpdate()
     {
         StateChangerDrift();
-        //DriftSpd();
+        DriftSpd();
     }
     private void onDriftFixedUpdate()
     {
@@ -31,17 +35,18 @@ public partial class KartMovement
     private void onDriftExit()
     {
         timerDrift = 0;
+        ExitDrifEvent.Invoke();    
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    //private void DriftSpd()
-    //{
-    //    if (isAccelerate)
-    //        GainSpeed();
-    //    else
-    //        LooseSpd();
-    //}
+    private void DriftSpd()
+    {
+        if (isAccelerate)
+            ChangeVelocity(accelerateSpd, maxSpdFront);
+        else
+            LooseSpd();
+    }
 
     private void StateChangerDrift()
     {
