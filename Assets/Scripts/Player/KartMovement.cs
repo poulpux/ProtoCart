@@ -88,6 +88,28 @@ public partial class KartMovement : StateManager
     {
         ChangeState(drift);
     }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Slide"))
+            velocity = 0f;
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.collider.gameObject.layer == LayerMask.NameToLayer("Default") && velocity > onContactMaxSpd )
+            velocity = onContactMaxSpd;
+        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Out") && velocity > onPanadeMaxSpd)
+        {
+            velocity = Mathf.Lerp(velocity, onPanadeMaxSpd, 1f);
+            rendererr.material.color = new Color(80f / 255f, 33f / 255f, 0f); //brown
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Out"))
+            ChangeState(doNothing);
+    }
 
     private void OnEnable()
     {
@@ -154,17 +176,4 @@ public partial class KartMovement : StateManager
         direction = 0f;
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Slide"))
-            velocity = 0f;
-    }
-
-    private void OnCollisionStay(Collision collision)
-    {
-        if(collision.collider.gameObject.layer == LayerMask.NameToLayer("Default") && velocity > onContactMaxSpd )
-            velocity = onContactMaxSpd;
-        if(collision.collider.gameObject.layer == LayerMask.NameToLayer("Out") && velocity > onPanadeMaxSpd )
-            velocity = Mathf.Lerp(velocity, onPanadeMaxSpd, 1f);
-    }
 }
