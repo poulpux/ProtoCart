@@ -12,7 +12,7 @@ public partial class KartMovement
 
     [HideInInspector] private UnityEvent EnterDrifEvent = new UnityEvent();
     [HideInInspector] private UnityEvent ExitDrifEvent = new UnityEvent();
-    private bool driftLeft;
+    private int driftSide;
     private void onDriftEnter()
     {
         EnterDrifEvent.Invoke();
@@ -20,10 +20,17 @@ public partial class KartMovement
         if (direction == 0)
             ChangeState(doNothing);
         else
-            driftLeft = direction < 0 ? true : false;
+            driftSide = direction < 0 ? 1 : direction > 0 ? 2 : 0;
     }
     private void onDriftUpdate()
     {
+        //if (driftSide == 1)
+        //    direction -= 0.4f;
+        //else if(driftSide == 2)
+        //    direction += 0.4f;
+
+        print(direction);
+
         StateChangerDrift();
         DriftSpd();
     }

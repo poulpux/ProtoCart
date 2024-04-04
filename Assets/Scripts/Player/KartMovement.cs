@@ -35,11 +35,11 @@ public partial class KartMovement : StateManager
 
     protected override void Update()
     {
+        TryDrift();
         base.Update();
         AllTimer();
         SetVelocity();
         Rotate();
-        TryDrift();
     }
 
     protected override void FixedUpdate()
