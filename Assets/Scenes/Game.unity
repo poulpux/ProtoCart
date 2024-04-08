@@ -1551,7 +1551,7 @@ MonoBehaviour:
   limitVeloY: 10
   rendererr: {fileID: 1169023324}
   neccessarySpd: 15
-  driftSensi: 0.1
+  driftSensi: 0.2
   EnterDrifEvent:
     m_PersistentCalls:
       m_Calls: []

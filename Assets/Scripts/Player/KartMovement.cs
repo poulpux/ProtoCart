@@ -64,7 +64,10 @@ public partial class KartMovement : StateManager
     {
         looseSpdTemp = looseSpdTemp == 0f ? looseSpdDoNothing : looseSpdTemp;
         if (isMuded)
+        {
             maxSpd = onPanadeMaxSpd;
+            looseSpdTemp = looseSpdDoNothing;
+        }
 
         if (veloModifier < 0f)
             velocity = velocity + veloModifier * Time.deltaTime > maxSpd ? velocity + veloModifier * Time.deltaTime : velocity + looseSpdTemp * Time.deltaTime;

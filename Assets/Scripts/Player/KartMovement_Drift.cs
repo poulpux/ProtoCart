@@ -26,11 +26,7 @@ public partial class KartMovement
     }
     private void onDriftUpdate()
     {
-        if (driftSide == 1)
-            offSet = -driftSensi;
-        else if (driftSide == 2)
-            offSet = driftSensi;
-
+        SetOffSetDirection();
         StateChangerDrift();
         DriftSpd();
     }
@@ -48,6 +44,14 @@ public partial class KartMovement
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    private void SetOffSetDirection()
+    {
+        offSet = (driftSide == 1 && direction < 0) ? -driftSensi / 2f :
+                 (driftSide == 1 && direction >= 0) ? -driftSensi :
+                 (driftSide == 2 && direction > 0) ? driftSensi / 2f :
+                 (driftSide == 2 && direction <= 0) ? driftSensi : 0f;
+    }
 
     private void DriftSpd()
     {
