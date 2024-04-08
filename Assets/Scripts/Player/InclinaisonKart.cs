@@ -8,19 +8,21 @@ public class InclinaisonKart : MonoBehaviour
 {
     [SerializeField] private float rotationSpeed = 5f, multiplyAngle = 20f, distOnAir = 1.8f, slideDecal = 20f, jumpHight = 2f; 
     [SerializeField] private GameObject P1, P2, P3, P4, P5; //P1 = front, P2 = middle, P3 = foreward, P4 = left, P5 = right
-    private float timerOnGround, timerJump, offSetSlide;
+    private float timerOnGround, offSetSlide;
     private KartMovement kart;
     private void Start()
     {
         kart = FindObjectsByType<KartMovement>(FindObjectsSortMode.None)
       ?.First(o => o.gameObject.layer == LayerMask.NameToLayer("Player"));
-        kart.EnterDrifEvent.AddListener((slide) => SlideEnter(slide));
+
+        kart.EnterDrifEvent.AddListener((slide, jump) => SlideEnter(slide, jump));
         kart.ExitDrifEvent.AddListener(() => offSetSlide = 0f) ;
     }
 
     void Update()
     {
-        transform.localRotation = Quaternion.Slerp(transform.localRotation, CalculateAngleFrontForeward(), rotationSpeed*(timerOnGround < 0.1f ? 2.5f : 1f) * Time.deltaTime);
+        //Inclinaison du kart, si il vient d'atterir, se reposition plus vite
+        transform.localRotation = Quaternion.Slerp(transform.localRotation, CalculateAngleFrontForeward(), rotationSpeed*(timerOnGround < 0.1f ? 2.5f : 1f) * Time.deltaTime); 
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,14 +60,16 @@ public class InclinaisonKart : MonoBehaviour
         return hit.collider != null ? hit.distance - 0.5f : 1f;
     }
 
-    private void SlideEnter(int slideSide)
+    private void SlideEnter(int slideSide, bool jump)
     {
         offSetSlide =  slideSide == 1 ? -slideDecal : slideSide == 2 ? slideDecal : 0f;
-        StartCoroutine(SlideLittleJump());
+        if(jump)
+            StartCoroutine(SlideLittleJump());
     }
     
     private IEnumerator SlideLittleJump()
     {
+        float timerJump = 0f;
         while(timerJump < 0.2f)
         {
             timerJump += Time.deltaTime;

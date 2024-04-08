@@ -11,21 +11,19 @@ public partial class KartMovement
     [SerializeField] private float neccessarySpd;
     [SerializeField] private float driftSensi = 0.1f;
 
-    [HideInInspector] public UnityEvent<int> EnterDrifEvent = new UnityEvent<int>();
+    [HideInInspector] public UnityEvent<int, bool> EnterDrifEvent = new UnityEvent<int, bool>();
     [HideInInspector] public UnityEvent ExitDrifEvent = new UnityEvent();
     private int driftSide;
-    private float offSet;
+    private float offSet, timerDriftDuration;
     private void onDriftEnter()
     {
         rendererr.material.color = Color.yellow;
-        if (direction == 0)
-            ChangeState(doNothing);
-        else
-            driftSide = direction < 0 ? 1 : direction > 0 ? 2 : 0;
-        EnterDrifEvent.Invoke(driftSide);
+        timerDriftDuration = 0f;
+        EnterDrifEvent.Invoke(driftSide, true);
     }
     private void onDriftUpdate()
     {
+        HelpToSlide();
         SetOffSetDirection();
         StateChangerDrift();
         DriftSpd();
@@ -47,6 +45,7 @@ public partial class KartMovement
 
     private void SetOffSetDirection()
     {
+        //Pour le feeling du drift, diviser par deux la sensi quand il tourne du même côté que le drift
         offSet = (driftSide == 1 && direction < 0) ? -driftSensi / 2f :
                  (driftSide == 1 && direction >= 0) ? -driftSensi :
                  (driftSide == 2 && direction > 0) ? driftSensi / 2f :
@@ -65,5 +64,17 @@ public partial class KartMovement
     {
         if (velocity < neccessarySpd || !isDrifting)
             ChangeState(doNothing);
+        else if(timerDriftDuration > 0.1f && driftSide == 0)
+            ChangeState(doNothing);
+    }
+
+    private void HelpToSlide()
+    {
+        timerDriftDuration += Time.deltaTime;
+        if (driftSide == 0 && timerDriftDuration < 0.1f)
+        {
+            driftSide = direction < 0 ? 1 : direction > 0 ? 2 : 0;
+            EnterDrifEvent.Invoke(driftSide, false);
+        }
     }
 }
