@@ -11,7 +11,7 @@ public partial class KartMovement : StateManager
     [Header("=====SpeedAndControl=====")]
     [Space(10)]
     [SerializeField] private float decelerateSpd;
-    [SerializeField] private float accelerateSpd, looseSpd, maxSpdFront, onContactMaxSpd,onPanadeMaxSpd, maxSpdBack, maniability, limitVeloY;
+    [SerializeField] private float accelerateSpd, looseSpdDoNothing, looseSpdDrift,  maxSpdFront, onContactMaxSpd,onPanadeMaxSpd, maxSpdBack, maxDriftSpd, maniability, limitVeloY;
 
     [Header("=====Visu=====")]
     [Space(10)]
@@ -20,8 +20,7 @@ public partial class KartMovement : StateManager
     Control input;
     private Rigidbody rb;
     private float velocity, direction, timerDrift;
-    private bool isAccelerate, isDecelerate, isDrifting, isMuded;
-    private Transform cam;
+    private bool isAccelerate, isDecelerate, isDrifting, isMuded, canDrift;
     protected override void Awake()
     {
         base.Awake();
@@ -59,19 +58,21 @@ public partial class KartMovement : StateManager
 
         rb = GetComponent<Rigidbody>();
         input = new Control();
-        cam = FindObjectsByType<Camera>(FindObjectsSortMode.None)
-            ?.First(o => o.gameObject.layer == LayerMask.NameToLayer("Player")).transform;
     }
 
-    private void ChangeVelocity(float veloModifier, float maxSpd)
+    private void ChangeVelocity(float veloModifier, float maxSpd, float looseSpdTemp = 0f)
     {
+        looseSpdTemp = looseSpdTemp == 0f ? looseSpdDoNothing : looseSpdTemp;
         if (isMuded)
+        {
             maxSpd = onPanadeMaxSpd;
+            looseSpdTemp = looseSpdDoNothing;
+        }
 
         if (veloModifier < 0f)
-            velocity = velocity + veloModifier * Time.deltaTime > maxSpd ? velocity + veloModifier * Time.deltaTime : velocity + looseSpd * Time.deltaTime;
+            velocity = velocity + veloModifier * Time.deltaTime > maxSpd ? velocity + veloModifier * Time.deltaTime : velocity + looseSpdTemp * Time.deltaTime;
         else
-            velocity = velocity + veloModifier * Time.deltaTime < maxSpd ? velocity + veloModifier * Time.deltaTime : velocity - looseSpd * Time.deltaTime;
+            velocity = velocity + veloModifier * Time.deltaTime < maxSpd ? velocity + veloModifier * Time.deltaTime : velocity - looseSpdTemp * Time.deltaTime;
     }
 
     private void SetVelocity()
@@ -82,7 +83,7 @@ public partial class KartMovement : StateManager
 
     private void Rotate()
     {
-         transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction, 0f);
+         transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction + offSet, 0f);
     }
 
     private void AllTimer()
@@ -92,13 +93,14 @@ public partial class KartMovement : StateManager
 
     private void TryDrift()
     {
-        if (timerDrift > 0.2f && GetState() != drift && isDrifting)
+        if (timerDrift > 0.4f && GetState() != drift && isDrifting && canDrift)
             Drift();
     }
 
     private void Drift()
     {
         ChangeState(drift);
+        canDrift = false;
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -159,6 +161,7 @@ public partial class KartMovement : StateManager
     private void DriftSleep(InputAction.CallbackContext value)
     {
         isDrifting = false;
+        canDrift = true;
     }
 
 
