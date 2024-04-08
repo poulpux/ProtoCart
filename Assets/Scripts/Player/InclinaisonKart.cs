@@ -8,12 +8,13 @@ public class InclinaisonKart : MonoBehaviour
 {
     [SerializeField] private float rotationSpeed = 5f, multiplyAngle = 20f, distOnAir = 1.8f, slideDecal = 20f, jumpHight = 2f; 
     [SerializeField] private GameObject P1, P2, P3, P4, P5; //P1 = front, P2 = middle, P3 = foreward, P4 = left, P5 = right
-    private float timerOnGround, timerJump, offSetSlide;
+    private float timerOnGround, offSetSlide;
     private KartMovement kart;
     private void Start()
     {
         kart = FindObjectsByType<KartMovement>(FindObjectsSortMode.None)
       ?.First(o => o.gameObject.layer == LayerMask.NameToLayer("Player"));
+
         kart.EnterDrifEvent.AddListener((slide) => SlideEnter(slide));
         kart.ExitDrifEvent.AddListener(() => offSetSlide = 0f) ;
     }
@@ -66,6 +67,7 @@ public class InclinaisonKart : MonoBehaviour
     
     private IEnumerator SlideLittleJump()
     {
+        float timerJump = 0f;
         while(timerJump < 0.2f)
         {
             timerJump += Time.deltaTime;

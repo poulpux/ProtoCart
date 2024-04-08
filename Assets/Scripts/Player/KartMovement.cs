@@ -48,6 +48,17 @@ public partial class KartMovement : StateManager
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    private void ThrowDash()
+    {
+        StopCoroutine(Dash());
+        StartCoroutine(Dash());
+    }
+
+    private IEnumerator Dash()
+    {
+        yield break;
+    }
+
     private void InstantiateAll()
     {
         drift.InitState(onDriftEnter, onDriftUpdate,onDriftFixedUpdate, onDriftExit); 
@@ -193,5 +204,4 @@ public partial class KartMovement : StateManager
     {
         direction = 0f;
     }
-
 }

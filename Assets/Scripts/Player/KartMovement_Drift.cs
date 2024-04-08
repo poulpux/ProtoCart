@@ -47,6 +47,7 @@ public partial class KartMovement
 
     private void SetOffSetDirection()
     {
+        //Pour le feeling du drift, diviser par deux la sensi quand il tourne du même côté que le drift
         offSet = (driftSide == 1 && direction < 0) ? -driftSensi / 2f :
                  (driftSide == 1 && direction >= 0) ? -driftSensi :
                  (driftSide == 2 && direction > 0) ? driftSensi / 2f :
