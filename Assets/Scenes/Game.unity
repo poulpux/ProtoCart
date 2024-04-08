@@ -4290,7 +4290,7 @@ MonoBehaviour:
   rotationSpeed: 10
   multiplyAngle: 20
   distOnAir: 2
-  slideDecal: 20
+  slideDecal: 30
   jumpHight: 2
   P1: {fileID: 2032772613}
   P2: {fileID: 712416970}

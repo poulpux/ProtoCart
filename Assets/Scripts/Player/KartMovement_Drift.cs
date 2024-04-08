@@ -18,17 +18,12 @@ public partial class KartMovement
     private void onDriftEnter()
     {
         rendererr.material.color = Color.yellow;
-
+        timerDriftDuration = 0f;
         EnterDrifEvent.Invoke(driftSide, true);
     }
     private void onDriftUpdate()
     {
-        if (driftSide == 0 && timerDriftDuration < 0.1f)
-        {
-            EnterDrifEvent.Invoke(driftSide, false);
-            driftSide = direction < 0 ? 1 : direction > 0 ? 2 : 0;
-        }
-
+        HelpToSlide();
         SetOffSetDirection();
         StateChangerDrift();
         DriftSpd();
@@ -71,5 +66,15 @@ public partial class KartMovement
             ChangeState(doNothing);
         else if(timerDriftDuration > 0.1f && driftSide == 0)
             ChangeState(doNothing);
+    }
+
+    private void HelpToSlide()
+    {
+        timerDriftDuration += Time.deltaTime;
+        if (driftSide == 0 && timerDriftDuration < 0.1f)
+        {
+            driftSide = direction < 0 ? 1 : direction > 0 ? 2 : 0;
+            EnterDrifEvent.Invoke(driftSide, false);
+        }
     }
 }
