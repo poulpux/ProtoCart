@@ -11,21 +11,24 @@ public partial class KartMovement
     [SerializeField] private float neccessarySpd;
     [SerializeField] private float driftSensi = 0.1f;
 
-    [HideInInspector] public UnityEvent<int> EnterDrifEvent = new UnityEvent<int>();
+    [HideInInspector] public UnityEvent<int, bool> EnterDrifEvent = new UnityEvent<int, bool>();
     [HideInInspector] public UnityEvent ExitDrifEvent = new UnityEvent();
     private int driftSide;
-    private float offSet;
+    private float offSet, timerDriftDuration;
     private void onDriftEnter()
     {
         rendererr.material.color = Color.yellow;
-        if (direction == 0)
-            ChangeState(doNothing);
-        else
-            driftSide = direction < 0 ? 1 : direction > 0 ? 2 : 0;
-        EnterDrifEvent.Invoke(driftSide);
+
+        EnterDrifEvent.Invoke(driftSide, true);
     }
     private void onDriftUpdate()
     {
+        if (driftSide == 0 && timerDriftDuration < 0.1f)
+        {
+            EnterDrifEvent.Invoke(driftSide, false);
+            driftSide = direction < 0 ? 1 : direction > 0 ? 2 : 0;
+        }
+
         SetOffSetDirection();
         StateChangerDrift();
         DriftSpd();
@@ -65,6 +68,8 @@ public partial class KartMovement
     private void StateChangerDrift()
     {
         if (velocity < neccessarySpd || !isDrifting)
+            ChangeState(doNothing);
+        else if(timerDriftDuration > 0.1f && driftSide == 0)
             ChangeState(doNothing);
     }
 }

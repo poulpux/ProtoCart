@@ -15,13 +15,14 @@ public class InclinaisonKart : MonoBehaviour
         kart = FindObjectsByType<KartMovement>(FindObjectsSortMode.None)
       ?.First(o => o.gameObject.layer == LayerMask.NameToLayer("Player"));
 
-        kart.EnterDrifEvent.AddListener((slide) => SlideEnter(slide));
+        kart.EnterDrifEvent.AddListener((slide, jump) => SlideEnter(slide, jump));
         kart.ExitDrifEvent.AddListener(() => offSetSlide = 0f) ;
     }
 
     void Update()
     {
-        transform.localRotation = Quaternion.Slerp(transform.localRotation, CalculateAngleFrontForeward(), rotationSpeed*(timerOnGround < 0.1f ? 2.5f : 1f) * Time.deltaTime);
+        //Inclinaison du kart, si il vient d'atterir, se reposition plus vite
+        transform.localRotation = Quaternion.Slerp(transform.localRotation, CalculateAngleFrontForeward(), rotationSpeed*(timerOnGround < 0.1f ? 2.5f : 1f) * Time.deltaTime); 
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,10 +60,11 @@ public class InclinaisonKart : MonoBehaviour
         return hit.collider != null ? hit.distance - 0.5f : 1f;
     }
 
-    private void SlideEnter(int slideSide)
+    private void SlideEnter(int slideSide, bool jump)
     {
         offSetSlide =  slideSide == 1 ? -slideDecal : slideSide == 2 ? slideDecal : 0f;
-        StartCoroutine(SlideLittleJump());
+        if(jump)
+            StartCoroutine(SlideLittleJump());
     }
     
     private IEnumerator SlideLittleJump()
