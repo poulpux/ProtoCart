@@ -1540,15 +1540,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   decelerateSpd: -50
   accelerateSpd: 50
-  looseSpd: 20
+  looseSpdDoNothing: 20
+  looseSpdDrift: 2
   maxSpdFront: 30
   onContactMaxSpd: 5
   onPanadeMaxSpd: 10
   maxSpdBack: -30
+  maxDriftSpd: 20
   maniability: 100
   limitVeloY: 10
   rendererr: {fileID: 1169023324}
   neccessarySpd: 15
+  driftSensi: 0.1
+  EnterDrifEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  ExitDrifEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &333074992
 Transform:
   m_ObjectHideFlags: 0
@@ -4281,6 +4290,8 @@ MonoBehaviour:
   rotationSpeed: 10
   multiplyAngle: 20
   distOnAir: 2
+  slideDecal: 20
+  jumpHight: 2
   P1: {fileID: 2032772613}
   P2: {fileID: 712416970}
   P3: {fileID: 1525345062}

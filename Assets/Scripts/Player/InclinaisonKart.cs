@@ -1,22 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InclinaisonKart : MonoBehaviour
 {
-    [SerializeField] private float rotationSpeed = 5f, multiplyAngle = 20f, distOnAir = 1.8f; 
+    [SerializeField] private float rotationSpeed = 5f, multiplyAngle = 20f, distOnAir = 1.8f, slideDecal = 20f, jumpHight = 2f; 
     [SerializeField] private GameObject P1, P2, P3, P4, P5; //P1 = front, P2 = middle, P3 = foreward, P4 = left, P5 = right
-    private bool onAir;
-    private float timerOnGround;
+    private float timerOnGround, timerJump, offSetSlide;
+    private KartMovement kart;
+    private void Start()
+    {
+        kart = FindObjectsByType<KartMovement>(FindObjectsSortMode.None)
+      ?.First(o => o.gameObject.layer == LayerMask.NameToLayer("Player"));
+        kart.EnterDrifEvent.AddListener((slide) => SlideEnter(slide));
+        kart.ExitDrifEvent.AddListener(() => offSetSlide = 0f) ;
+    }
 
     void Update()
     {
         transform.localRotation = Quaternion.Slerp(transform.localRotation, CalculateAngleFrontForeward(), rotationSpeed*(timerOnGround < 0.1f ? 2.5f : 1f) * Time.deltaTime);
     }
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     private Quaternion CalculateAngleFrontForeward()
     {
-        return Quaternion.Euler(new Vector3(EulerFloat(1,3, true) , 0f, EulerFloat(4, 5, false)));
+        return Quaternion.Euler(new Vector3(EulerFloat(1,3, true) , offSetSlide, EulerFloat(4, 5, false)));
     }
 
     private float EulerFloat(int firstP, int secondP, bool x)
@@ -45,5 +56,29 @@ public class InclinaisonKart : MonoBehaviour
         Physics.Raycast(P.transform.position, Vector3.down, out hit, nb != 2 ? 1f : distOnAir);
 
         return hit.collider != null ? hit.distance - 0.5f : 1f;
+    }
+
+    private void SlideEnter(int slideSide)
+    {
+        offSetSlide =  slideSide == 1 ? -slideDecal : slideSide == 2 ? slideDecal : 0f;
+        StartCoroutine(SlideLittleJump());
+    }
+    
+    private IEnumerator SlideLittleJump()
+    {
+        while(timerJump < 0.2f)
+        {
+            timerJump += Time.deltaTime;
+            if(timerJump < 0.1f)
+                transform.localPosition += jumpHight * Time.deltaTime * Vector3.up;
+            else
+                transform.localPosition -= jumpHight * Time.deltaTime * Vector3.up;
+            yield return null;
+        }
+
+        timerJump = 0f;
+        transform.localPosition = Vector3.zero;
+
+        yield break;
     }
 }

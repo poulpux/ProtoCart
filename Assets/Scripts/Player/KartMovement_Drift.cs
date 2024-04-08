@@ -6,42 +6,44 @@ using UnityEngine.Events;
 public partial class KartMovement
 {
     State drift = new State();
-    [Header("=====SpeedAndControl=====")]
+    [Header("=====Drift=====")]
     [Space(10)]
     [SerializeField] private float neccessarySpd;
+    [SerializeField] private float driftSensi = 0.1f;
 
-    [HideInInspector] private UnityEvent EnterDrifEvent = new UnityEvent();
-    [HideInInspector] private UnityEvent ExitDrifEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent<int> EnterDrifEvent = new UnityEvent<int>();
+    [HideInInspector] public UnityEvent ExitDrifEvent = new UnityEvent();
     private int driftSide;
+    private float offSet;
     private void onDriftEnter()
     {
-        EnterDrifEvent.Invoke();
         rendererr.material.color = Color.yellow;
         if (direction == 0)
             ChangeState(doNothing);
         else
             driftSide = direction < 0 ? 1 : direction > 0 ? 2 : 0;
+        EnterDrifEvent.Invoke(driftSide);
     }
     private void onDriftUpdate()
     {
-        //if (driftSide == 1)
-        //    direction -= 0.4f;
-        //else if(driftSide == 2)
-        //    direction += 0.4f;
-
-        print(direction);
+        if (driftSide == 1)
+            offSet = -driftSensi;
+        else if (driftSide == 2)
+            offSet = driftSensi;
 
         StateChangerDrift();
         DriftSpd();
     }
     private void onDriftFixedUpdate()
     {
-
+        
     }
 
     private void onDriftExit()
     {
+        offSet = 0f;
         timerDrift = 0;
+        driftSide = 0;
         ExitDrifEvent.Invoke();    
     }
 
@@ -50,19 +52,14 @@ public partial class KartMovement
     private void DriftSpd()
     {
         if (isAccelerate)
-            ChangeVelocity(accelerateSpd, maxSpdFront);
+            ChangeVelocity(accelerateSpd, maxDriftSpd, looseSpdDrift);
         else
             LooseSpd();
     }
 
     private void StateChangerDrift()
     {
-        if (velocity < neccessarySpd || !isDrifting || velocity < neccessarySpd)
+        if (velocity < neccessarySpd || !isDrifting)
             ChangeState(doNothing);
-    }
-
-    private void ChangeRotation()
-    {
-
     }
 }

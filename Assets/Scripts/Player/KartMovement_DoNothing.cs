@@ -29,9 +29,9 @@ public partial class KartMovement
     private void LooseSpd()
     {
         if (velocity > 0)
-            ChangeVelocity(-looseSpd, 0f);
+            ChangeVelocity(-looseSpdDoNothing, 0f);
         else
-            ChangeVelocity(looseSpd, 0f);
+            ChangeVelocity(looseSpdDoNothing, 0f);
     }
     private void StateChangerDoNothing()
     {
