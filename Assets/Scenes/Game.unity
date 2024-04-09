@@ -1550,7 +1550,7 @@ MonoBehaviour:
   maniability: 100
   limitVeloY: 10
   rendererr: {fileID: 1169023324}
-  config: 1
+  config: 0
   neccessarySpd: 15
   driftSensi: 0.2
   EnterDrifEvent:
