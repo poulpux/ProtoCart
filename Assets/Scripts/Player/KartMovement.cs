@@ -168,12 +168,10 @@ public partial class KartMovement : PlayerInputSystem
             moveType = movementType.DASH;
             maxSpd = dashMaxSpd;
         }
-        else if(velocity > maxSpdFront)
+        else if (velocity > maxSpdFront)
         {
             moveType = movementType.DECELERATE;
         }
-        else if (isMuded )
-            maxSpd = onPanadeMaxSpd;
     }
 
     private void SetVelocity()
