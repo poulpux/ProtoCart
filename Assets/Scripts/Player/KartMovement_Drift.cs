@@ -9,7 +9,7 @@ public partial class KartMovement
     [Header("=====Drift=====")]
     [Space(10)]
     [SerializeField] private float neccessarySpd;
-    [SerializeField] private float driftSensi = 0.1f;
+    [SerializeField] private float driftSensi = 0.1f, distOnAir;
 
     [HideInInspector] public UnityEvent<int, bool> EnterDrifEvent = new UnityEvent<int, bool>();
     [HideInInspector] public UnityEvent ExitDrifEvent = new UnityEvent();
@@ -39,6 +39,7 @@ public partial class KartMovement
         timerDrift = 0;
         driftSide = 0;
         ExitDrifEvent.Invoke();    
+        isDrifting = false;
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

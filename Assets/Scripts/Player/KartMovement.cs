@@ -19,7 +19,7 @@ public partial class KartMovement : PlayerInputSystem
 
     private Rigidbody rb;
     private float velocity, timerDrift;
-    private bool isMuded;
+    private bool isMuded, isOnAir;
 
     protected override void Awake()
     {
@@ -38,6 +38,7 @@ public partial class KartMovement : PlayerInputSystem
         AllTimer();
         SetVelocity();
         Rotate();
+        GroudDistanceCalculation();
     }
 
     protected override void FixedUpdate()
@@ -46,6 +47,12 @@ public partial class KartMovement : PlayerInputSystem
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    private void GroudDistanceCalculation()
+    {
+        Ray ray = new Ray(transform.position, -transform.up);
+        isOnAir = Physics.Raycast(ray, out RaycastHit hit, distOnAir, ~(1 << LayerMask.NameToLayer("Player"))) ? false : true;
+    }
 
     private void ThrowDash()
     {
@@ -102,7 +109,7 @@ public partial class KartMovement : PlayerInputSystem
 
     private void TryDrift()
     {
-        if (timerDrift > 0.4f  && isDrifting)
+        if (timerDrift > 0.4f  && isDrifting && !isOnAir)
             ChangeState(drift);
     }
 
