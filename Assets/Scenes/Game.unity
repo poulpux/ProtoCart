@@ -1624,28 +1624,38 @@ MonoBehaviour:
   limitVeloY: 10
   maniability: 100
   dashDuration: 0.2
+  accelerationDuration: 1.5
   dashCldwn: 3
   rendererr: {fileID: 1169023324}
-  curve:
+  accelerationCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0.5357129
-      outSlope: 0.5357129
+      inSlope: 4.7118354
+      outSlope: 4.7118354
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.59050757
+      outWeight: 0.020522388
     - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 4.0552893
-      outSlope: 4.0552893
+      time: 0.31529844
+      value: 0.82783026
+      inSlope: 0.60459274
+      outSlope: 0.60459274
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.050791442
+      inWeight: 0.06716418
+      outWeight: 0.1437501
+    - serializedVersion: 3
+      time: 0.91231346
+      value: 0.9551887
+      inSlope: 0.17017451
+      outSlope: 0.17017451
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.16250004
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

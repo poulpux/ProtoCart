@@ -25,6 +25,7 @@ public partial class KartMovement : PlayerInputSystem
     [Header("=====Duration=====")]
     [Space(10)]
     [SerializeField] private float dashDuration;
+    [SerializeField] private float accelerationDuration;
     public float dashCldwn;
 
     [Header("=====Visu=====")]
@@ -33,13 +34,15 @@ public partial class KartMovement : PlayerInputSystem
     
     [Header("=====Curve=====")]
     [Space(10)]
-    [SerializeField] private AnimationCurve curve;
+    [SerializeField] private AnimationCurve accelerationCurve;
 
 
     [HideInInspector] public float dashTimer, velocity;
     private Rigidbody rb;
     private float timerDrift;
     private bool isMuded, isOnAir, isDashing;
+
+    private float saveMaxSpd, curveTimer, saveStartValue;
 
     protected override void Awake()
     {
@@ -119,9 +122,25 @@ public partial class KartMovement : PlayerInputSystem
         AllVelocityExeption(ref veloModifier,ref maxSpd,ref looseSpdTemp);
 
         if (veloModifier < 0f)
+        {
+            curveTimer = 0f;
+            maxSpd = -1f;
             velocity = velocity + veloModifier * Time.deltaTime > maxSpd ? velocity + veloModifier * Time.deltaTime : velocity + looseSpdTemp * Time.deltaTime;
-        else
-            velocity = velocity + veloModifier * Time.deltaTime < maxSpd ? velocity + veloModifier * Time.deltaTime : velocity - looseSpdTemp * Time.deltaTime;
+        }
+        if (veloModifier >= 0f)
+        {
+            curveTimer += Time.deltaTime / accelerationDuration;
+            if(saveMaxSpd != maxSpd)
+            {
+                curveTimer = 0f;
+                saveMaxSpd = maxSpd;
+                saveStartValue = velocity;
+                //ReplayCurve
+            }
+            
+            velocity = saveStartValue + accelerationCurve.Evaluate(curveTimer) * (saveMaxSpd - saveStartValue);
+            
+        }
     }
 
     private void AllVelocityExeption(ref float veloModifier,ref  float maxSpd,ref float looseSpdTemp)
