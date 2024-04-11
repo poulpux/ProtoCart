@@ -19,6 +19,7 @@ public partial class KartMovement
     {
         rendererr.material.color = Color.yellow;
         timerDriftDuration = 0f;
+        timerDrift = 0;
         EnterDrifEvent.Invoke(driftSide, true);
     }
     private void onDriftUpdate()
@@ -36,7 +37,6 @@ public partial class KartMovement
     private void onDriftExit()
     {
         offSet = 0f;
-        timerDrift = 0;
         driftSide = 0;
         ExitDrifEvent.Invoke();    
         isDrifting = false;
