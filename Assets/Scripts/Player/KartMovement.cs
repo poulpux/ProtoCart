@@ -34,7 +34,7 @@ public partial class KartMovement : PlayerInputSystem
     [Header("=====Duration=====")]
     [Space(10)]
     [SerializeField] private float dashDuration;
-    public float dashCldwn;
+    public float dashCldwn, driftCldwn;
 
     [Header("=====Visu=====")]
     [Space(10)]
@@ -192,7 +192,7 @@ public partial class KartMovement : PlayerInputSystem
 
     private void TryDrift()
     {
-        if (timerDrift > 0.4f  && isDrifting && !isOnAir)
+        if (timerDrift > driftCldwn && isDrifting && !isOnAir)
             ChangeState(drift);
     }
 
