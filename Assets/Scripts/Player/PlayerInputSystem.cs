@@ -16,7 +16,7 @@ public class PlayerInputSystem : StateManager
 
     Control input;
     protected float direction;
-    protected bool isAccelerate, isDecelerate, isDrifting, isDashing;
+    protected bool isAccelerate, isDecelerate, isDrifting, TryDash;
     [Header("=====CONFIG=====")]
     [Space(10)]
     [SerializeField] private CONFIG config;
@@ -91,12 +91,12 @@ public class PlayerInputSystem : StateManager
 
     private void GetDash(InputAction.CallbackContext value)
     {
-        isDashing = value.ReadValue<float>() > 0;
+        TryDash = value.ReadValue<float>() > 0;
     }
 
     private void DashSleep(InputAction.CallbackContext value)
     {
-        isDashing = false;
+        TryDash = false;
     }
 
     private void TryDrift(InputAction.CallbackContext value)
