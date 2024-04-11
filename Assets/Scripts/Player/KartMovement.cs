@@ -8,10 +8,13 @@ using UnityEngine.Windows;
 [RequireComponent(typeof(Rigidbody))]
 public partial class KartMovement : PlayerInputSystem
 {
-    [Header("=====AccelerationAndDeceleration=====")]
-    [Space(10)]
-    [SerializeField] private float decelerateSpd;
-    [SerializeField] private float accelerateSpd, dashSpd, looseSpdDoNothing, looseSpdDrift, dashDecelerate;
+    private enum movementType
+    {
+        ACCELERATE,
+        DECELERATE,
+        DONOTHING,
+        DRIFT
+    }
 
     [Header("=====MaxSpeed=====")]
     [Space(10)]
@@ -35,6 +38,7 @@ public partial class KartMovement : PlayerInputSystem
     [Header("=====Curve=====")]
     [Space(10)]
     [SerializeField] private AnimationCurve accelerationCurve;
+    [SerializeField] private AnimationCurve decelerationCurve, doNothingCurve, driftCurve;
 
 
     [HideInInspector] public float dashTimer, velocity;
@@ -115,49 +119,31 @@ public partial class KartMovement : PlayerInputSystem
         rb = GetComponent<Rigidbody>();
     }
 
-    private void ChangeVelocity(float veloModifier, float maxSpd, float looseSpdTemp = 0f)
+    private void ChangeVelocity(movementType moveType, float maxSpd)
     {
-        looseSpdTemp = looseSpdTemp == 0f ? looseSpdDoNothing : looseSpdTemp;
+        AllVelocityExeption(ref moveType, ref maxSpd);
 
-        AllVelocityExeption(ref veloModifier,ref maxSpd,ref looseSpdTemp);
-
-        if (veloModifier < 0f)
+        curveTimer += Time.deltaTime / accelerationDuration;
+        if (saveMaxSpd != maxSpd)
         {
             curveTimer = 0f;
-            maxSpd = -1f;
-            velocity = velocity + veloModifier * Time.deltaTime > maxSpd ? velocity + veloModifier * Time.deltaTime : velocity + looseSpdTemp * Time.deltaTime;
+            saveMaxSpd = maxSpd;
+            saveStartValue = velocity;
         }
-        if (veloModifier >= 0f)
-        {
-            curveTimer += Time.deltaTime / accelerationDuration;
-            if(saveMaxSpd != maxSpd)
-            {
-                curveTimer = 0f;
-                saveMaxSpd = maxSpd;
-                saveStartValue = velocity;
-                //ReplayCurve
-            }
-            
-            velocity = saveStartValue + accelerationCurve.Evaluate(curveTimer) * (saveMaxSpd - saveStartValue);
-            
-        }
+
+        AnimationCurve currentCurve = moveType == movementType.ACCELERATE ? accelerationCurve : moveType == movementType.DECELERATE ? decelerationCurve : moveType == movementType.DONOTHING ? doNothingCurve : driftCurve;
+        velocity = saveStartValue + currentCurve.Evaluate(curveTimer) * (saveMaxSpd - saveStartValue);
     }
 
-    private void AllVelocityExeption(ref float veloModifier,ref  float maxSpd,ref float looseSpdTemp)
+    private void AllVelocityExeption(ref movementType moveType, ref  float maxSpd)
     {
-        if (isMuded && !isDashing)
-        {
-            maxSpd = onPanadeMaxSpd;
-            looseSpdTemp = looseSpdDoNothing;
-        }
-
         if (isDashing)
         {
-            veloModifier = dashSpd;
+            moveType = movementType.ACCELERATE;
             maxSpd = dashMaxSpd;
         }
-        else if (velocity > maxSpdFront)
-            looseSpdTemp = dashDecelerate;
+        else if (isMuded )
+            maxSpd = onPanadeMaxSpd;
     }
 
     private void SetVelocity()

@@ -14,7 +14,7 @@ public partial class GameManager : StateManager
     private static GameManager instance;
     public static GameManager Instance { get { return instance; } }
 
-    private void Awake()
+    protected override void Awake()
     {
         if (instance != null && instance != this)
         {
@@ -23,7 +23,6 @@ public partial class GameManager : StateManager
         else
         {
             instance = this;
-            DontDestroyOnLoad(this.gameObject);
         }
     }
 
