@@ -20,7 +20,7 @@ public partial class KartMovement : PlayerInputSystem
     [Header("=====AccelerationAndDeceleration=====")]
     [Space(10)]
     [SerializeField] private float accelerationSpd;
-    [SerializeField] private float decelerationSpd, doNothingSpd, driftSpd, mudedSpd, dashSpd;
+    [SerializeField] private float decelerationSpd, doNothingSpd, driftSpd, dashSpd;
 
     [Header("=====MaxSpeed=====")]
     [Space(10)]
@@ -34,7 +34,6 @@ public partial class KartMovement : PlayerInputSystem
     [Header("=====Duration=====")]
     [Space(10)]
     [SerializeField] private float dashDuration;
-    [SerializeField] private float accelerationDuration, doNothingDuration, decelerateDuration, driftDuration;
     public float dashCldwn;
 
     [Header("=====Visu=====")]
@@ -50,7 +49,7 @@ public partial class KartMovement : PlayerInputSystem
     [HideInInspector] public float dashTimer, velocity;
     private Rigidbody rb;
     private float timerDrift;
-    private bool isMuded, isOnAir, isDashing;
+    private bool isOnAir, isDashing;
 
     private float saveMaxSpd, curveTimer, saveStartValue;
 
@@ -207,19 +206,11 @@ public partial class KartMovement : PlayerInputSystem
     {
         if(collision.collider.gameObject.layer == LayerMask.NameToLayer("Default") && velocity > onContactMaxSpd )
             velocity = onContactMaxSpd;
-        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Out") && velocity > onPanadeMaxSpd)
-        {
-            rendererr.material.color = new Color(80f / 255f, 33f / 255f, 0f); //brown
-            isMuded = true;
-        }
     }
 
     private void OnCollisionExit(Collision collision)
     {
         if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Out"))
-        {
             ChangeState(doNothing);
-            isMuded = false;
-        }
     }
 }
