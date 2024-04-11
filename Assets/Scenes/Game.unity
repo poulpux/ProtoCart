@@ -303,7 +303,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e05de28fd8ecc8344846a176afab1391, type: 2}
+  - {fileID: 2100000, guid: 3bccb03faa068964e88e85b31be8424e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1609,12 +1609,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: 0
-  decelerateSpd: -50
-  accelerateSpd: 50
-  dashSpd: 300
-  looseSpdDoNothing: 20
-  looseSpdDrift: 2
-  dashDecelerate: 100
+  accelerationSpd: 20
+  decelerationSpd: -20
+  doNothingSpd: 20
+  driftSpd: 2
+  mudedSpd: 10
+  dashSpd: 200
   maxSpdFront: 30
   dashMaxSpd: 100
   onContactMaxSpd: 5
@@ -1623,34 +1623,128 @@ MonoBehaviour:
   maxDriftSpd: 20
   limitVeloY: 10
   maniability: 100
-  dashDuration: 0.2
+  dashDuration: 0.3
+  accelerationDuration: 1.5
+  doNothingDuration: 3
+  decelerateDuration: 2
+  driftDuration: 3
   dashCldwn: 3
   rendererr: {fileID: 1169023324}
-  curve:
+  accelerationCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0.5357129
-      outSlope: 0.5357129
+      inSlope: 4.7118354
+      outSlope: 4.7118354
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.59050757
+      outWeight: 0.020522388
     - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 4.0552893
-      outSlope: 4.0552893
+      time: 0.3493408
+      value: 0.7670011
+      inSlope: 0.60459274
+      outSlope: 0.60459274
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.050791442
+      inWeight: 0.06716418
+      outWeight: 0.1437501
+    - serializedVersion: 3
+      time: 0.91231346
+      value: 0.9551887
+      inSlope: 0.17017451
+      outSlope: 0.17017451
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.16250004
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  dashTimer: 0
+  decelerationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  doNothingCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  driftCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.8757097
+      value: 0.56523776
+      inSlope: 1.1842554
+      outSlope: 1.1842554
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  dashTimer: 6.1650333
   velocity: 0
   neccessarySpd: 15
   driftSensi: 80
@@ -5599,7 +5693,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1729452913
 RectTransform:
   m_ObjectHideFlags: 0

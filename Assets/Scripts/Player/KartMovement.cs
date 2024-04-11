@@ -8,10 +8,19 @@ using UnityEngine.Windows;
 [RequireComponent(typeof(Rigidbody))]
 public partial class KartMovement : PlayerInputSystem
 {
+    private enum movementType
+    {
+        ACCELERATE,
+        DECELERATE,
+        DONOTHING,
+        DRIFT,
+        DASH
+    }
+
     [Header("=====AccelerationAndDeceleration=====")]
     [Space(10)]
-    [SerializeField] private float decelerateSpd;
-    [SerializeField] private float accelerateSpd, dashSpd, looseSpdDoNothing, looseSpdDrift, dashDecelerate;
+    [SerializeField] private float accelerationSpd;
+    [SerializeField] private float decelerationSpd, doNothingSpd, driftSpd, dashSpd;
 
     [Header("=====MaxSpeed=====")]
     [Space(10)]
@@ -33,13 +42,16 @@ public partial class KartMovement : PlayerInputSystem
     
     [Header("=====Curve=====")]
     [Space(10)]
-    [SerializeField] private AnimationCurve curve;
+    [SerializeField] private AnimationCurve accelerationCurve;
+    [SerializeField] private AnimationCurve decelerationCurve, doNothingCurve, driftCurve;
 
 
     [HideInInspector] public float dashTimer, velocity;
     private Rigidbody rb;
     private float timerDrift;
-    private bool isMuded, isOnAir, isDashing;
+    private bool isOnAir, isDashing;
+
+    private float saveMaxSpd, curveTimer, saveStartValue;
 
     protected override void Awake()
     {
@@ -79,7 +91,7 @@ public partial class KartMovement : PlayerInputSystem
     {
         if (TryDash && dashTimer > dashCldwn)
         {
-            velocity = velocity < 0f ? 0f : velocity;
+            velocity = maxSpdFront;
             dashTimer = 0;
             isDashing = true;
             StopCoroutine(Dash());
@@ -112,33 +124,53 @@ public partial class KartMovement : PlayerInputSystem
         rb = GetComponent<Rigidbody>();
     }
 
-    private void ChangeVelocity(float veloModifier, float maxSpd, float looseSpdTemp = 0f)
+    private void ChangeVelocity(movementType moveType, float maxSpd)
     {
-        looseSpdTemp = looseSpdTemp == 0f ? looseSpdDoNothing : looseSpdTemp;
-
-        AllVelocityExeption(ref veloModifier,ref maxSpd,ref looseSpdTemp);
-
-        if (veloModifier < 0f)
-            velocity = velocity + veloModifier * Time.deltaTime > maxSpd ? velocity + veloModifier * Time.deltaTime : velocity + looseSpdTemp * Time.deltaTime;
-        else
-            velocity = velocity + veloModifier * Time.deltaTime < maxSpd ? velocity + veloModifier * Time.deltaTime : velocity - looseSpdTemp * Time.deltaTime;
-    }
-
-    private void AllVelocityExeption(ref float veloModifier,ref  float maxSpd,ref float looseSpdTemp)
-    {
-        if (isMuded && !isDashing)
+        AllVelocityExeption(ref moveType, ref maxSpd);
+        AnimationCurve currentCurve = moveType == movementType.ACCELERATE ? accelerationCurve : moveType == movementType.DECELERATE ? decelerationCurve : moveType == movementType.DONOTHING ? doNothingCurve : driftCurve;
+        print(FindDuration(moveType));
+        curveTimer += Time.deltaTime / FindDuration(moveType);
+        if (saveMaxSpd != maxSpd)
         {
-            maxSpd = onPanadeMaxSpd;
-            looseSpdTemp = looseSpdDoNothing;
+            curveTimer = 0f;
+            saveMaxSpd = maxSpd;
+            saveStartValue = velocity;
         }
 
+        velocity = curveTimer >= 1 ? saveMaxSpd : saveStartValue + currentCurve.Evaluate(curveTimer) * (saveMaxSpd - saveStartValue);
+    }
+
+    private float FindDuration(movementType moveType)
+    {
+        float coef = (saveMaxSpd - saveStartValue);
+        if (moveType == movementType.ACCELERATE)
+            return coef / accelerationSpd;
+        else if (moveType == movementType.DECELERATE)
+            return coef / decelerationSpd;
+        else if (moveType == movementType.DONOTHING)
+            return  Mathf.Abs(coef / doNothingSpd);
+        else if (moveType == movementType.DRIFT)
+            return Mathf.Abs(coef / driftSpd);
+        else if(moveType == movementType.DASH)
+            return coef / dashSpd;
+        else
+        {
+            Debug.LogError("NotGoodEnum : KartMovement");
+            return 0f;
+        }
+    }
+
+    private void AllVelocityExeption(ref movementType moveType, ref  float maxSpd)
+    {
         if (isDashing)
         {
-            veloModifier = dashSpd;
+            moveType = movementType.DASH;
             maxSpd = dashMaxSpd;
         }
         else if (velocity > maxSpdFront)
-            looseSpdTemp = dashDecelerate;
+        {
+            moveType = movementType.DECELERATE;
+        }
     }
 
     private void SetVelocity()
@@ -174,19 +206,11 @@ public partial class KartMovement : PlayerInputSystem
     {
         if(collision.collider.gameObject.layer == LayerMask.NameToLayer("Default") && velocity > onContactMaxSpd )
             velocity = onContactMaxSpd;
-        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Out") && velocity > onPanadeMaxSpd)
-        {
-            rendererr.material.color = new Color(80f / 255f, 33f / 255f, 0f); //brown
-            isMuded = true;
-        }
     }
 
     private void OnCollisionExit(Collision collision)
     {
         if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Out"))
-        {
             ChangeState(doNothing);
-            isMuded = false;
-        }
     }
 }

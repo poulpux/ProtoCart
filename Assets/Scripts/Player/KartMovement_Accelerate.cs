@@ -12,7 +12,7 @@ public partial class KartMovement
     }
     private void onAccelerateUpdate()
     {
-        ChangeVelocity(accelerateSpd, maxSpdFront);
+        ChangeVelocity(movementType.ACCELERATE, maxSpdFront);
         StateChangerAccelerate();
         TryDrift();
     }

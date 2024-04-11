@@ -70,7 +70,7 @@ public partial class KartMovement
     private void DriftSpd()
     {
         if (isAccelerate)
-            ChangeVelocity(accelerateSpd, maxDriftSpd, looseSpdDrift);
+            ChangeVelocity(movementType.DRIFT, maxDriftSpd);
         else
             LooseSpd();
     }
