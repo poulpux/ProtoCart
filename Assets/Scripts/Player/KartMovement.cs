@@ -8,18 +8,38 @@ using UnityEngine.Windows;
 [RequireComponent(typeof(Rigidbody))]
 public partial class KartMovement : PlayerInputSystem
 {
-    [Header("=====SpeedAndControl=====")]
+    [Header("=====AccelerationAndDeceleration=====")]
     [Space(10)]
     [SerializeField] private float decelerateSpd;
-    [SerializeField] private float accelerateSpd, looseSpdDoNothing, looseSpdDrift,  maxSpdFront, onContactMaxSpd,onPanadeMaxSpd, maxSpdBack, maxDriftSpd, maniability, limitVeloY;
+    [SerializeField] private float accelerateSpd, dashSpd, looseSpdDoNothing, looseSpdDrift, dashDecelerate;
+
+    [Header("=====MaxSpeed=====")]
+    [Space(10)]
+    [SerializeField] private float maxSpdFront;
+    [SerializeField] private float dashMaxSpd, onContactMaxSpd, onPanadeMaxSpd, maxSpdBack, maxDriftSpd, limitVeloY;
+
+    [Header("=====Maniability=====")]
+    [Space(10)]
+    [SerializeField] private float maniability;
+
+    [Header("=====Duration=====")]
+    [Space(10)]
+    [SerializeField] private float dashDuration;
+    public float dashCldwn;
 
     [Header("=====Visu=====")]
     [Space(10)]
     [SerializeField] private MeshRenderer rendererr;
+    
+    [Header("=====Curve=====")]
+    [Space(10)]
+    [SerializeField] private AnimationCurve curve;
 
+
+    [HideInInspector] public float dashTimer, velocity;
     private Rigidbody rb;
-    private float velocity, timerDrift;
-    private bool isMuded, isOnAir;
+    private float timerDrift;
+    private bool isMuded, isOnAir, isDashing;
 
     protected override void Awake()
     {
@@ -36,6 +56,7 @@ public partial class KartMovement : PlayerInputSystem
     {
         base.Update();
         AllTimer();
+        ThrowDash();
         SetVelocity();
         Rotate();
         GroudDistanceCalculation();
@@ -56,12 +77,27 @@ public partial class KartMovement : PlayerInputSystem
 
     private void ThrowDash()
     {
-        StopCoroutine(Dash());
-        StartCoroutine(Dash());
+        if (TryDash && dashTimer > dashCldwn)
+        {
+            velocity = velocity < 0f ? 0f : velocity;
+            dashTimer = 0;
+            isDashing = true;
+            StopCoroutine(Dash());
+            StartCoroutine(Dash());
+            TryDash = false;
+        }
+
+        if (isDashing)
+            rendererr.material.color = new Color(1f, 100f / 255f, 0f);
+
+        
     }
 
     private IEnumerator Dash()
     {
+        yield return new WaitForSeconds(dashDuration);
+        isDashing = false;
+        rendererr.material.color = Color.white;
         yield break;
     }
 
@@ -79,16 +115,30 @@ public partial class KartMovement : PlayerInputSystem
     private void ChangeVelocity(float veloModifier, float maxSpd, float looseSpdTemp = 0f)
     {
         looseSpdTemp = looseSpdTemp == 0f ? looseSpdDoNothing : looseSpdTemp;
-        if (isMuded)
-        {
-            maxSpd = onPanadeMaxSpd;
-            looseSpdTemp = looseSpdDoNothing;
-        }
+
+        AllVelocityExeption(ref veloModifier,ref maxSpd,ref looseSpdTemp);
 
         if (veloModifier < 0f)
             velocity = velocity + veloModifier * Time.deltaTime > maxSpd ? velocity + veloModifier * Time.deltaTime : velocity + looseSpdTemp * Time.deltaTime;
         else
             velocity = velocity + veloModifier * Time.deltaTime < maxSpd ? velocity + veloModifier * Time.deltaTime : velocity - looseSpdTemp * Time.deltaTime;
+    }
+
+    private void AllVelocityExeption(ref float veloModifier,ref  float maxSpd,ref float looseSpdTemp)
+    {
+        if (isMuded && !isDashing)
+        {
+            maxSpd = onPanadeMaxSpd;
+            looseSpdTemp = looseSpdDoNothing;
+        }
+
+        if (isDashing)
+        {
+            veloModifier = dashSpd;
+            maxSpd = dashMaxSpd;
+        }
+        else if (velocity > maxSpdFront)
+            looseSpdTemp = dashDecelerate;
     }
 
     private void SetVelocity()
@@ -105,6 +155,7 @@ public partial class KartMovement : PlayerInputSystem
     private void AllTimer()
     {
         timerDrift += Time.deltaTime;
+        dashTimer += Time.deltaTime;
     }
 
     private void TryDrift()
