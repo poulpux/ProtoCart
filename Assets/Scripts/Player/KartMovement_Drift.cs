@@ -14,7 +14,7 @@ public partial class KartMovement
     [HideInInspector] public UnityEvent<int, bool> EnterDrifEvent = new UnityEvent<int, bool>();
     [HideInInspector] public UnityEvent ExitDrifEvent = new UnityEvent();
     private int driftSide;
-    private float offSet, timerDriftDuration;
+    private float offSet, timerDriftDuration, saveOffSetGoal, driftLerpTimer;
     private void onDriftEnter()
     {
         rendererr.material.color = Color.yellow;
@@ -45,11 +45,25 @@ public partial class KartMovement
 
     private void SetOffSetDirection()
     {
-        //Pour le feeling du drift, diviser par deux la sensi quand il tourne du même côté que le drift
-        offSet = (driftSide == 1 && direction < 0) ? -driftSensi / 2f :
+        float targetOffSet = (driftSide == 1 && direction < 0) ? -driftSensi / 2f :
                  (driftSide == 1 && direction >= 0) ? -driftSensi :
                  (driftSide == 2 && direction > 0) ? driftSensi / 2f :
                  (driftSide == 2 && direction <= 0) ? driftSensi : 0f;
+
+        LerpOffSet(targetOffSet);
+    }
+
+    private void LerpOffSet(float targetOffSet)
+    {
+        if (targetOffSet != saveOffSetGoal)
+        {
+            driftLerpTimer = 0f;
+            saveOffSetGoal = targetOffSet;
+        }
+
+        driftLerpTimer += Time.deltaTime;
+        float t = Mathf.Clamp01(driftLerpTimer / 0.2f);
+        offSet = Mathf.Lerp(offSet, targetOffSet, t);
     }
 
     private void DriftSpd()

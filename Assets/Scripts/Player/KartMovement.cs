@@ -11,7 +11,7 @@ public partial class KartMovement : PlayerInputSystem
     [Header("=====SpeedAndControl=====")]
     [Space(10)]
     [SerializeField] private float decelerateSpd;
-    [SerializeField] private float accelerateSpd, looseSpdDoNothing, looseSpdDrift,  maxSpdFront, onContactMaxSpd,onPanadeMaxSpd, maxSpdBack, maxDriftSpd, maniability, limitVeloY, deathZone;
+    [SerializeField] private float accelerateSpd, looseSpdDoNothing, looseSpdDrift,  maxSpdFront, onContactMaxSpd,onPanadeMaxSpd, maxSpdBack, maxDriftSpd, maniability, limitVeloY;
 
     [Header("=====Visu=====")]
     [Space(10)]
