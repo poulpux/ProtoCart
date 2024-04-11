@@ -13,8 +13,14 @@ public partial class KartMovement : PlayerInputSystem
         ACCELERATE,
         DECELERATE,
         DONOTHING,
-        DRIFT
+        DRIFT,
+        DASH
     }
+
+    [Header("=====AccelerationAndDeceleration=====")]
+    [Space(10)]
+    [SerializeField] private float accelerationSpd;
+    [SerializeField] private float decelerationSpd, doNothingSpd, driftSpd, mudedSpd, dashSpd;
 
     [Header("=====MaxSpeed=====")]
     [Space(10)]
@@ -28,7 +34,7 @@ public partial class KartMovement : PlayerInputSystem
     [Header("=====Duration=====")]
     [Space(10)]
     [SerializeField] private float dashDuration;
-    [SerializeField] private float accelerationDuration;
+    [SerializeField] private float accelerationDuration, doNothingDuration, decelerateDuration, driftDuration;
     public float dashCldwn;
 
     [Header("=====Visu=====")]
@@ -86,7 +92,7 @@ public partial class KartMovement : PlayerInputSystem
     {
         if (TryDash && dashTimer > dashCldwn)
         {
-            velocity = velocity < 0f ? 0f : velocity;
+            velocity = maxSpdFront;
             dashTimer = 0;
             isDashing = true;
             StopCoroutine(Dash());
@@ -122,8 +128,9 @@ public partial class KartMovement : PlayerInputSystem
     private void ChangeVelocity(movementType moveType, float maxSpd)
     {
         AllVelocityExeption(ref moveType, ref maxSpd);
-
-        curveTimer += Time.deltaTime / accelerationDuration;
+        AnimationCurve currentCurve = moveType == movementType.ACCELERATE ? accelerationCurve : moveType == movementType.DECELERATE ? decelerationCurve : moveType == movementType.DONOTHING ? doNothingCurve : driftCurve;
+        print(FindDuration(moveType));
+        curveTimer += Time.deltaTime / FindDuration(moveType);
         if (saveMaxSpd != maxSpd)
         {
             curveTimer = 0f;
@@ -131,16 +138,39 @@ public partial class KartMovement : PlayerInputSystem
             saveStartValue = velocity;
         }
 
-        AnimationCurve currentCurve = moveType == movementType.ACCELERATE ? accelerationCurve : moveType == movementType.DECELERATE ? decelerationCurve : moveType == movementType.DONOTHING ? doNothingCurve : driftCurve;
-        velocity = saveStartValue + currentCurve.Evaluate(curveTimer) * (saveMaxSpd - saveStartValue);
+        velocity = curveTimer >= 1 ? saveMaxSpd : saveStartValue + currentCurve.Evaluate(curveTimer) * (saveMaxSpd - saveStartValue);
+    }
+
+    private float FindDuration(movementType moveType)
+    {
+        float coef = (saveMaxSpd - saveStartValue);
+        if (moveType == movementType.ACCELERATE)
+            return coef / accelerationSpd;
+        else if (moveType == movementType.DECELERATE)
+            return coef / decelerationSpd;
+        else if (moveType == movementType.DONOTHING)
+            return  Mathf.Abs(coef / doNothingSpd);
+        else if (moveType == movementType.DRIFT)
+            return Mathf.Abs(coef / driftSpd);
+        else if(moveType == movementType.DASH)
+            return coef / dashSpd;
+        else
+        {
+            Debug.LogError("NotGoodEnum : KartMovement");
+            return 0f;
+        }
     }
 
     private void AllVelocityExeption(ref movementType moveType, ref  float maxSpd)
     {
         if (isDashing)
         {
-            moveType = movementType.ACCELERATE;
+            moveType = movementType.DASH;
             maxSpd = dashMaxSpd;
+        }
+        else if(velocity > maxSpdFront)
+        {
+            moveType = movementType.DECELERATE;
         }
         else if (isMuded )
             maxSpd = onPanadeMaxSpd;

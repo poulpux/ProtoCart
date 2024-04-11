@@ -1609,12 +1609,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: 0
-  decelerateSpd: -50
-  accelerateSpd: 50
-  dashSpd: 300
-  looseSpdDoNothing: 20
-  looseSpdDrift: 2
-  dashDecelerate: 100
+  accelerationSpd: 20
+  decelerationSpd: -20
+  doNothingSpd: 20
+  driftSpd: 2
+  mudedSpd: 10
+  dashSpd: 200
   maxSpdFront: 30
   dashMaxSpd: 100
   onContactMaxSpd: 5
@@ -1625,6 +1625,9 @@ MonoBehaviour:
   maniability: 100
   dashDuration: 0.3
   accelerationDuration: 1.5
+  doNothingDuration: 3
+  decelerateDuration: 2
+  driftDuration: 3
   dashCldwn: 3
   rendererr: {fileID: 1169023324}
   accelerationCurve:
@@ -1741,7 +1744,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  dashTimer: 0
+  dashTimer: 6.1650333
   velocity: 0
   neccessarySpd: 15
   driftSensi: 80
@@ -5690,7 +5693,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1729452913
 RectTransform:
   m_ObjectHideFlags: 0

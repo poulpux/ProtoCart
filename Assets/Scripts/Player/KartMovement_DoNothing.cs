@@ -30,9 +30,9 @@ public partial class KartMovement
     private void LooseSpd()
     {
         if (velocity > 0)
-            ChangeVelocity(movementType.DECELERATE, 0f);
+            ChangeVelocity(movementType.DONOTHING, 0f);
         else
-            ChangeVelocity(movementType.ACCELERATE, 0f);
+            ChangeVelocity(movementType.DONOTHING, 0f);
     }
     private void StateChangerDoNothing()
     {
