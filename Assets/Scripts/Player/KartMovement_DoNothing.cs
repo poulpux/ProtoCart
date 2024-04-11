@@ -14,6 +14,7 @@ public partial class KartMovement
     {
         LooseSpd();
         StateChangerDoNothing();
+        TryDrift();
     }
     private void onDoNothingFixedUpdate()
     {

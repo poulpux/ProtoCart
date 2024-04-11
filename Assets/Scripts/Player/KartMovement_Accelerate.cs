@@ -14,6 +14,7 @@ public partial class KartMovement
     {
         ChangeVelocity(accelerateSpd, maxSpdFront);
         StateChangerAccelerate();
+        TryDrift();
     }
     private void onAccelerateFixedUpdate()
     {

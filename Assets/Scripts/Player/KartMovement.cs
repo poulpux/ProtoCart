@@ -5,31 +5,22 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
-public enum CONFIG
-{
-    DEFAULT,
-    TACTICAL,
-    SWITCH
-}
-
 [RequireComponent(typeof(Rigidbody))]
-public partial class KartMovement : StateManager
+public partial class KartMovement : PlayerInputSystem
 {
     [Header("=====SpeedAndControl=====")]
     [Space(10)]
     [SerializeField] private float decelerateSpd;
-    [SerializeField] private float accelerateSpd, looseSpdDoNothing, looseSpdDrift,  maxSpdFront, onContactMaxSpd,onPanadeMaxSpd, maxSpdBack, maxDriftSpd, maniability, limitVeloY;
+    [SerializeField] private float accelerateSpd, looseSpdDoNothing, looseSpdDrift,  maxSpdFront, onContactMaxSpd,onPanadeMaxSpd, maxSpdBack, maxDriftSpd, maniability, limitVeloY, deathZone;
 
     [Header("=====Visu=====")]
     [Space(10)]
     [SerializeField] private MeshRenderer rendererr;
 
-    Control input;
     private Rigidbody rb;
-    private float velocity, direction, timerDrift;
-    private bool isAccelerate, isDecelerate, isDrifting, isMuded, canDriftBUp, canDashBUp;
+    private float velocity, timerDrift;
+    private bool isMuded;
 
-    [SerializeField] private CONFIG config;
     protected override void Awake()
     {
         base.Awake();
@@ -43,7 +34,6 @@ public partial class KartMovement : StateManager
 
     protected override void Update()
     {
-        TryDrift();
         base.Update();
         AllTimer();
         SetVelocity();
@@ -77,7 +67,6 @@ public partial class KartMovement : StateManager
         ForcedCurrentState(doNothing);
 
         rb = GetComponent<Rigidbody>();
-        input = new Control();
     }
 
     private void ChangeVelocity(float veloModifier, float maxSpd, float looseSpdTemp = 0f)
@@ -103,7 +92,7 @@ public partial class KartMovement : StateManager
 
     private void Rotate()
     {
-         transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction + offSet, 0f);
+         transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction + offSet * Time.deltaTime, 0f);
     }
 
     private void AllTimer()
@@ -113,15 +102,10 @@ public partial class KartMovement : StateManager
 
     private void TryDrift()
     {
-        if (timerDrift > 0.4f && GetState() != drift && isDrifting && canDriftBUp)
-            Drift();
+        if (timerDrift > 0.4f  && isDrifting)
+            ChangeState(drift);
     }
 
-    private void Drift()
-    {
-        ChangeState(drift);
-        canDriftBUp = false;
-    }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Default"))
@@ -146,101 +130,5 @@ public partial class KartMovement : StateManager
             ChangeState(doNothing);
             isMuded = false;
         }
-    }
-
-    private void OnEnable()
-    {
-        input.Enable();
-
-        if (config == CONFIG.DEFAULT)
-            DefaultEnable();
-    }
-
-    private void OnDisable()
-    {
-        input.Disable();
-
-        if(config == CONFIG.DEFAULT)
-            DefaultDisable();
-    }
-
-    private void DefaultDisable()
-    {
-        input.Default.Accelerate.performed -= AccelerateActing;
-        input.Default.Accelerate.canceled -= AccelerateSleep;
-        input.Default.Decelerate.performed -= DecelerateActing;
-        input.Default.Decelerate.canceled -= DecelerateSleep;
-        input.Default.Direction.performed -= GetDirectionActing;
-        input.Default.Direction.canceled -= GetDirectionSleep;
-        input.Default.Drift.performed -= TryDrift;
-        input.Default.Drift.canceled -= DriftSleep;
-        input.Default.Dash.canceled -= TryDash;
-        input.Default.Dash.canceled -= DashSleep;
-    }
-
-    private void DefaultEnable()
-    {
-        input.Default.Accelerate.performed += AccelerateActing;
-        input.Default.Accelerate.canceled += AccelerateSleep;
-        input.Default.Decelerate.performed += DecelerateActing;
-        input.Default.Decelerate.canceled += DecelerateSleep;
-        input.Default.Direction.performed += GetDirectionActing;
-        input.Default.Direction.canceled += GetDirectionSleep;
-        input.Default.Drift.performed += TryDrift;
-        input.Default.Drift.canceled += DriftSleep;
-        input.Default.Dash.canceled += TryDash;
-        input.Default.Dash.canceled += DashSleep;
-    }
-
-    private void TryDash(InputAction.CallbackContext value)
-    {
-        if (value.ReadValue<float>() > 0 && canDashBUp)
-            ThrowDash();
-    }
-
-    private void DashSleep(InputAction.CallbackContext value)
-    {
-        canDashBUp = true;
-    }
-
-    private void TryDrift(InputAction.CallbackContext value)
-    {
-        isDrifting = value.ReadValue<float>() > 0;
-    }
-
-    private void DriftSleep(InputAction.CallbackContext value)
-    {
-        isDrifting = false;
-        canDriftBUp = true;
-    }
-
-
-    private void AccelerateActing(InputAction.CallbackContext value)
-    {
-        isAccelerate = value.ReadValue<float>() > 0;
-    }
-
-    private void AccelerateSleep(InputAction.CallbackContext value)
-    {
-        isAccelerate = false;
-    }
-
-    private void DecelerateActing(InputAction.CallbackContext value)
-    {
-        isDecelerate = value.ReadValue<float>() > 0;
-    }
-    
-    private void DecelerateSleep(InputAction.CallbackContext value)
-    {
-        isDecelerate = false;
-    }
-    
-    private void GetDirectionActing(InputAction.CallbackContext value)
-    {
-        direction = value.ReadValue<Vector2>().x;
-    }
-    private void GetDirectionSleep(InputAction.CallbackContext value)
-    {
-        direction = 0f;
     }
 }
