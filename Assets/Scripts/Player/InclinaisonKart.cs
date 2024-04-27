@@ -12,8 +12,7 @@ public class InclinaisonKart : MonoBehaviour
     private KartMovement kart;
     private void Start()
     {
-        kart = FindObjectsByType<KartMovement>(FindObjectsSortMode.None)
-      ?.First(o => o.gameObject.layer == LayerMask.NameToLayer("Player"));
+        kart = GetComponentInParent<KartMovement>();
 
         kart.EnterDrifEvent.AddListener((slide, jump) => SlideEnter(slide, jump));
         kart.ExitDrifEvent.AddListener(() => offSetSlide = 0f) ;
