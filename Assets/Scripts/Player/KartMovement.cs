@@ -101,8 +101,6 @@ public partial class KartMovement : PlayerInputSystem
 
         if (isDashing)
             rendererr.material.color = new Color(1f, 100f / 255f, 0f);
-
-        
     }
 
     private IEnumerator Dash()
@@ -127,10 +125,12 @@ public partial class KartMovement : PlayerInputSystem
     private void ChangeVelocity(movementType moveType, float maxSpd)
     {
         AllVelocityExeption(ref moveType, ref maxSpd);
-        AnimationCurve currentCurve = moveType == movementType.ACCELERATE ? accelerationCurve : moveType == movementType.DECELERATE ? decelerationCurve : moveType == movementType.DONOTHING ? doNothingCurve : driftCurve;
-        print(FindDuration(moveType));
+        AnimationCurve currentCurve = moveType == movementType.ACCELERATE ? accelerationCurve : 
+                                      moveType == movementType.DECELERATE ? decelerationCurve : 
+                                      moveType == movementType.DONOTHING ? doNothingCurve : driftCurve;
+
         curveTimer += Time.deltaTime / FindDuration(moveType);
-        if (saveMaxSpd != maxSpd)
+        if (saveMaxSpd != maxSpd) //A changé de mode
         {
             curveTimer = 0f;
             saveMaxSpd = maxSpd;
@@ -155,7 +155,7 @@ public partial class KartMovement : PlayerInputSystem
             return coef / dashSpd;
         else
         {
-            Debug.LogError("NotGoodEnum : KartMovement");
+            Debug.LogError("Error movement type enum : KartMovement");
             return 0f;
         }
     }
