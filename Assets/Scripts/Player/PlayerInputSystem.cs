@@ -137,6 +137,7 @@ public class PlayerInputSystem : StateManager
         direction = 0f;
     }
 
+    //J'arrive pas à simplifier ça avec l'input system. Chaque config à un type de classe propre et pas moyen de faire des appels généraux ou d'utiliser un string 
     private void DefaultEnable()
     {
         input.Default.Accelerate.performed += AccelerateActing;
