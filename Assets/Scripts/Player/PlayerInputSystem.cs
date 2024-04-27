@@ -53,6 +53,10 @@ public class PlayerInputSystem : StateManager
     {
         input.Enable();
 
+        DefaultEnable();
+        SwitchEnable();
+        TacticalEnable();
+
         SwitchConfig(config);
     }
     
@@ -60,13 +64,9 @@ public class PlayerInputSystem : StateManager
     {
         input.Disable();
 
-        if (config == CONFIG.DEFAULT)
-            DefaultDisable();
-        else if (config == CONFIG.SWITCH)
-            SwitchDisable();
-        else if( config==CONFIG.TACTICAL)
-            TacticalDisable();
-
+        DefaultDisable();
+        SwitchDisable();
+        TacticalDisable();
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,19 +74,17 @@ public class PlayerInputSystem : StateManager
     private void SwitchConfig(CONFIG config)
     {
         print(config.ToString());
-        if (this.config == CONFIG.DEFAULT)
-            DefaultDisable();
-        else if(this.config == CONFIG.TACTICAL)
-            TacticalDisable();
-        else if(this.config == CONFIG.SWITCH)
-            SwitchDisable();
+
+        input.Default.Disable();
+        input.Tactical.Disable();
+        input.Switch.Disable();
 
         if (config == CONFIG.DEFAULT)
-            DefaultEnable();
+            input.Default.Enable();
         else if (config == CONFIG.TACTICAL)
-            TacticalEnable();
+            input.Tactical.Enable();
         else if (config == CONFIG.SWITCH)
-            SwitchEnable();
+            input.Switch.Enable();
     }
 
     private void GetDash(InputAction.CallbackContext value)
