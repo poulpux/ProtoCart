@@ -1,12 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerInputSystem : StateManager
 {
+    //Toutes les variables interressantes ici
+    //=======================================
+    [HideInInspector] public Vector2 direction;
+    [HideInInspector] public bool isAccelerate, isDecelerate, isDrifting, TryDash;
+    //=======================================
+
+
     private enum CONFIG
     {
         DEFAULT,
@@ -15,8 +20,6 @@ public class PlayerInputSystem : StateManager
     }
 
     Control input;
-    protected float direction;
-    protected bool isAccelerate, isDecelerate, isDrifting, TryDash;
     [Header("=====CONFIG=====")]
     [Space(10)]
     [SerializeField] private CONFIG config;
@@ -130,11 +133,11 @@ public class PlayerInputSystem : StateManager
 
     private void GetDirectionActing(InputAction.CallbackContext value)
     {
-        direction = value.ReadValue<Vector2>().x;
+        direction = value.ReadValue<Vector2>();
     }
     private void GetDirectionSleep(InputAction.CallbackContext value)
     {
-        direction = 0f;
+        direction = Vector2.zero;
     }
 
     //J'arrive pas à simplifier ça avec l'input system. Chaque config à un type de classe propre et pas moyen de faire des appels généraux ou d'utiliser un string 

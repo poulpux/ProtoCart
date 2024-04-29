@@ -46,10 +46,10 @@ public partial class KartMovement
 
     private void SetOffSetDirection()
     {
-        float targetOffSet = (driftSide == 1 && direction < 0) ? -driftSensi / 2f :
-                 (driftSide == 1 && direction >= 0) ? -driftSensi :
-                 (driftSide == 2 && direction > 0) ? driftSensi / 2f :
-                 (driftSide == 2 && direction <= 0) ? driftSensi : 0f;
+        float targetOffSet = (driftSide == 1 && direction.x < 0) ? -driftSensi / 2f :
+                 (driftSide == 1 && direction.x >= 0) ? -driftSensi :
+                 (driftSide == 2 && direction.x > 0) ? driftSensi / 2f :
+                 (driftSide == 2 && direction.x <= 0) ? driftSensi : 0f;
 
         LerpOffSet(targetOffSet);
     }
@@ -72,7 +72,7 @@ public partial class KartMovement
         if (isAccelerate)
             ChangeVelocity(movementType.DRIFT, maxDriftSpd);
         else
-            LooseSpd();
+            ChangeVelocity(movementType.DONOTHING, 0f);
     }
 
     private void StateChangerDrift()
@@ -88,7 +88,7 @@ public partial class KartMovement
         timerDriftDuration += Time.deltaTime;
         if (driftSide == 0 && timerDriftDuration < 0.1f)
         {
-            driftSide = direction < 0 ? 1 : direction > 0 ? 2 : 0;
+            driftSide = direction.x < 0 ? 1 : direction.x > 0 ? 2 : 0;
             EnterDrifEvent.Invoke(driftSide, false);
         }
     }

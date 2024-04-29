@@ -181,7 +181,7 @@ public partial class KartMovement : PlayerInputSystem
 
     private void Rotate()
     {
-         transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction + offSet * Time.deltaTime, 0f);
+         transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y + maniability * Time.deltaTime * direction.x + offSet * Time.deltaTime, 0f);
     }
 
     private void AllTimer()
@@ -199,7 +199,9 @@ public partial class KartMovement : PlayerInputSystem
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Default"))
+        {
             velocity = 0f;
+        }
     }
 
     private void OnCollisionStay(Collision collision)

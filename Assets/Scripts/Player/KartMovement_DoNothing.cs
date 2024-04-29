@@ -12,7 +12,7 @@ public partial class KartMovement
     }
     private void onDoNothingUpdate()
     {
-        LooseSpd();
+        ChangeVelocity(movementType.DONOTHING, 0f);
         StateChangerDoNothing();
         TryDrift();
     }
@@ -27,13 +27,7 @@ public partial class KartMovement
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    private void LooseSpd()
-    {
-        if (velocity > 0)
-            ChangeVelocity(movementType.DONOTHING, 0f);
-        else
-            ChangeVelocity(movementType.DONOTHING, 0f);
-    }
+
     private void StateChangerDoNothing()
     {
         if (isDecelerate)
